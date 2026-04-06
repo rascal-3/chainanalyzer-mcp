@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "chainanalyzer-aml": {
+      "command": "npx",
+      "args": ["-y", "tsx", "/path/to/chain-analyzer/packages/mcp/src/index.ts"],
+      "env": {
+        "CHAINANALYZER_BASE_URL": "https://chain-analyzer.com",
+
+        "_comment_auth": "Choose ONE authentication method below:",
+
+        "_comment_x402": "Option 1: x402 USDC payment (pay per request, no account needed)",
+        "X402_PRIVATE_KEY": "",
+        "X402_NETWORK": "base",
+
+        "_comment_apikey": "Option 2: API key (subscription-based, requires ChainAnalyzer account)",
+        "CHAINANALYZER_API_KEY": ""
+      }
+    }
+  }
+}
