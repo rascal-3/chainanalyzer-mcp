@@ -8,9 +8,9 @@
 
 | ツール | 説明 | 料金 |
 |--------|------|------|
-| `check_address_risk` | ブロックチェーンアドレスのAMLリスクスコア | $0.005 |
+| `check_address_risk` | ブロックチェーンアドレスのAMLリスクスコア | $0.008 |
 | `sanctions_check` | OFAC / FATF / 金融庁 制裁リストスクリーニング | $0.003 |
-| `trace_transaction` | ML異常検知付きトランザクションフロー追跡 | $0.01 |
+| `trace_transaction` | ML異常検知付きトランザクションフロー追跡 | $0.015 |
 | `detect_coinjoin` | CoinJoin / ミキシングパターン検出（Bitcoin） | $0.01 |
 | `cluster_wallet` | Neo4jグラフによるウォレットクラスタリング | $0.02 |
 | `batch_screening` | 一括AMLスクリーニング（最大50アドレス） | $0.05 |

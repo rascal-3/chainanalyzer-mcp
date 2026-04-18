@@ -12,9 +12,9 @@
  *   3. Dev mode:    Neither set — works when server has X402_ENABLED=false
  *
  * Usage:
- *   npx chainanalyzer-mcp
+ *   npx @chainanalyzer/mcp-server
  *   # or
- *   tsx src/index.ts
+ *   tsx packages/mcp/src/index.ts
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
@@ -31,7 +31,7 @@ const server = new McpServer({
   version: "1.0.0",
 })
 
-// ── Tool: check_address_risk ($0.005) ─────────────────────────────
+// ── Tool: check_address_risk ($0.008) ─────────────────────────────
 
 server.tool(
   "check_address_risk",
@@ -76,7 +76,7 @@ server.tool(
   },
 )
 
-// ── Tool: trace_transaction ($0.01) ───────────────────────────────
+// ── Tool: trace_transaction ($0.015) ──────────────────────────────
 
 server.tool(
   "trace_transaction",

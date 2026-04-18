@@ -8,9 +8,9 @@ Scan any address across **Bitcoin, Ethereum, Polygon, Avalanche, and Solana** fo
 
 | Tool | Description | Price |
 |------|-------------|-------|
-| `check_address_risk` | AML risk score for any blockchain address | $0.005 |
+| `check_address_risk` | AML risk score for any blockchain address | $0.008 |
 | `sanctions_check` | OFAC / FATF / JFSA sanctions screening | $0.003 |
-| `trace_transaction` | Transaction flow tracing with ML anomaly detection | $0.01 |
+| `trace_transaction` | Transaction flow tracing with ML anomaly detection | $0.015 |
 | `detect_coinjoin` | CoinJoin / mixing pattern detection (Bitcoin) | $0.01 |
 | `cluster_wallet` | Wallet clustering via Neo4j graph analysis | $0.02 |
 | `batch_screening` | Batch AML screening (up to 50 addresses) | $0.05 |

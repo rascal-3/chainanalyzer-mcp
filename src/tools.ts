@@ -26,7 +26,7 @@ export const tools: ToolDefinition[] = [
       "Returns risk level (CRITICAL/HIGH/MEDIUM/LOW), score (0-100), " +
       "detection details, and ML anomaly score. " +
       "Supports Bitcoin, Ethereum, Polygon, Avalanche, and Solana. " +
-      "Auto-detects chain if not specified. Price: $0.005 per request.",
+      "Auto-detects chain if not specified. Price: $0.008 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -48,7 +48,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["address"],
     },
-    price: "$0.005",
+    price: "$0.008",
     endpoint: "/x402/api/address/{address}/risk-score",
     method: "GET",
   },
@@ -83,7 +83,7 @@ export const tools: ToolDefinition[] = [
       "Trace fund flows for a transaction with ML-powered anomaly detection. " +
       "Returns Neo4j graph data showing nodes (addresses) and edges (transfers). " +
       "Identifies mixing, layering, and suspicious routing patterns. " +
-      "Price: $0.01 per request.",
+      "Price: $0.015 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -102,7 +102,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["tx_hash"],
     },
-    price: "$0.01",
+    price: "$0.015",
     endpoint: "/x402/api/tx/{tx_hash}/trace",
     method: "GET",
   },
