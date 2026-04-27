@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.rascal-3/chainanalyzer-mcp",
-  "description": "Multi-chain AML risk scoring, sanctions screening, and tx tracing across BTC, ETH, POL, AVAX, SOL.",
+  "description": "Multi-chain AML risk scoring, sanctions screening, and tx tracing across BTC, ETH, POL, BNB, BASE, ARB, OP, AVAX, SOL.",
   "repository": {
     "url": "https://github.com/rascal-3/chainanalyzer-mcp",
     "source": "github"
   },
-  "version": "1.1.1",
+  "version": "1.1.2",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "chainanalyzer-mcp",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "transport": {
         "type": "stdio"
       },

@@ -35,11 +35,11 @@ const server = new McpServer({
 
 server.tool(
   "check_address_risk",
-  "Get AML risk score for any blockchain address. Returns risk level, score (0-100), detections, and ML anomaly score. Supports BTC, ETH, POL, AVAX, SOL.",
+  "Get AML risk score for any blockchain address. Returns risk level, score (0-100), detections, and ML anomaly score. Supports BTC, ETH, POL, BNB, BASE, ARB, OP, AVAX, SOL.",
   {
     address: z.string().describe("Blockchain address to analyze"),
     chain: z
-      .enum(["bitcoin", "ethereum", "polygon", "avalanche", "solana"])
+      .enum(["bitcoin", "ethereum", "polygon", "bsc", "base", "arbitrum", "optimism", "avalanche", "solana"])
       .optional()
       .describe("Chain (auto-detected if omitted)"),
     lang: z.enum(["en", "ja"]).optional().describe("Language (default: en)"),

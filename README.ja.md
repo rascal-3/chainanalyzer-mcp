@@ -2,7 +2,7 @@
 
 [ChainAnalyzer](https://chain-analyzer.com) の MCP Server -- AIエージェント向けマルチチェーンAML分析ツール。
 
-**Bitcoin, Ethereum, Polygon, Avalanche, Solana** の5チェーンに対応。制裁リスト照合、マネーロンダリングパターン検出、ラグプル検知、ウォレットドレイナー検出など、76以上の検知ルール、ML異常検知、Neo4jグラフ分析を提供します。
+**Bitcoin, Ethereum, Polygon, BNB Smart Chain, Base, Arbitrum, Optimism, Avalanche, Solana** の9チェーンに対応。制裁リスト照合、マネーロンダリングパターン検出、ラグプル検知、ウォレットドレイナー検出など、76以上の検知ルール、ML異常検知、Neo4jグラフ分析を提供します。
 
 ## ツール一覧
 
