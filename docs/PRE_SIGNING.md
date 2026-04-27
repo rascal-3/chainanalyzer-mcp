@@ -216,6 +216,41 @@ curl -H "X-API-Key: tfk_…" \
   "https://chain-analyzer.com/api/v1/public/scan?address=0xabc…&chain=ethereum"
 ```
 
+### Postman (first-time setup)
+
+If you'd rather click than type, here's the exact mapping. The two
+fields that trip new users up are the auth header (it's a *header*,
+not a *param*) and the placement of `address` (it's a query param,
+not a body field for `GET`).
+
+1. **Method**: `GET`
+2. **URL**: `https://chain-analyzer.com/api/v1/public/scan`
+3. **Headers tab** — add one row:
+
+   | KEY         | VALUE     |
+   | ----------- | --------- |
+   | `X-API-Key` | `tfk_…`   |
+
+   The literal column header in Postman says "KEY / VALUE" — that
+   refers to the header *name* on the left and the header *value* on
+   the right. It is **not** asking for your API key in the KEY column.
+   Put `X-API-Key` (the header name) in KEY, and your `tfk_…` string
+   in VALUE.
+
+4. **Params tab** — add two rows:
+
+   | KEY       | VALUE       |
+   | --------- | ----------- |
+   | `address` | `0xabc…`    |
+   | `chain`   | `ethereum`  |
+
+5. Hit **Send**. You should get a `200` with the JSON body shown
+   above. If you get `401`, the header didn't apply — re-check
+   step 3 (it's a common spot to mis-paste the key into KEY).
+
+For `POST`, switch the method, drop the Params, and use the **Body
+→ raw → JSON** tab with `{"address": "0xabc…", "chain": "ethereum"}`.
+
 ---
 
 ## POST — for non-idempotent or bulk-style callers
