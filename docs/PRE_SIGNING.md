@@ -218,6 +218,37 @@ curl -H "X-API-Key: tfk_…" \
 
 ---
 
+## POST — for non-idempotent or bulk-style callers
+
+The same endpoint also accepts `POST` with a JSON body. Functionally
+identical to `GET`; use it when query strings are awkward — long
+addresses, batch scripts, log-redaction concerns, or environments where
+URL-bar leakage matters.
+
+```bash
+curl -X POST https://chain-analyzer.com/api/v1/public/scan \
+  -H "X-API-Key: tfk_…" \
+  -H "Content-Type: application/json" \
+  -d '{"address": "0xabc…", "chain": "ethereum"}'
+```
+
+```ts
+await fetch("https://chain-analyzer.com/api/v1/public/scan", {
+  method: "POST",
+  headers: {
+    "X-API-Key": process.env.CHAINANALYZER_API_KEY!,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ address, chain: "ethereum" }),
+})
+```
+
+For the pre-signing guardrail itself, prefer `GET` — it caches more
+naturally and the destination address isn't a secret. `POST` is here
+because some integrators ask for it, not because it's recommended.
+
+---
+
 ## Why pre-signing is the right hook
 
 Most wallet-side losses do not come from poor private-key hygiene;
