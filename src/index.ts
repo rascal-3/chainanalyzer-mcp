@@ -35,7 +35,7 @@ const server = new McpServer({
 
 server.tool(
   "check_address_risk",
-  "Get AML risk score for any blockchain address. Returns risk level, score (0-100), detections, and ML anomaly score. Supports BTC, ETH, POL, BNB, BASE, ARB, OP, AVAX, SOL.",
+  "Get AML risk score for any blockchain address. Returns risk level, score (0-100), detections, and ML anomaly score. 8 chains live for self-serve (BTC, ETH, POL, BASE, ARB, OP, AVAX, SOL); BNB Smart Chain on Enterprise rollout (requires API key).",
   {
     address: z.string().describe("Blockchain address to analyze"),
     chain: z
