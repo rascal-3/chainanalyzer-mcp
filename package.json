@@ -1,8 +1,8 @@
 {
   "name": "chainanalyzer-mcp",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "mcpName": "io.github.rascal-3/chainanalyzer-mcp",
-  "description": "ChainAnalyzer MCP Server — Blockchain AML risk scoring for AI agents. Supports x402 USDC payments on Base and Solana.",
+  "description": "ChainAnalyzer MCP Server — Multi-chain blockchain AML risk scoring for AI agents. 8 chains live for self-serve (BTC, ETH, POL, BASE, ARB, OP, AVAX, SOL) plus BNB Smart Chain on Enterprise rollout. x402 USDC payments on Base and Solana.",
   "type": "module",
   "main": "src/index.ts",
   "bin": {
