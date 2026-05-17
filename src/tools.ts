@@ -26,7 +26,7 @@ export const tools: ToolDefinition[] = [
       "Returns risk level (CRITICAL/HIGH/MEDIUM/LOW), score (0-100), " +
       "detection details, and ML anomaly score. " +
       "Supports Bitcoin, Ethereum, Polygon, Avalanche, and Solana. " +
-      "Auto-detects chain if not specified. Price: $0.008 per request.",
+      "Auto-detects chain if not specified. Price: $1.00 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -48,7 +48,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["address"],
     },
-    price: "$0.008",
+    price: "$1.00",
     endpoint: "/x402/api/address/{address}/risk-score",
     method: "GET",
   },
@@ -57,7 +57,7 @@ export const tools: ToolDefinition[] = [
     description:
       "Screen address against OFAC SDN, FATF, JFSA (Japan), and ChainAnalyzer ScamDB sanctions lists. " +
       "Returns whether the address is sanctioned, which lists matched, and risk level. " +
-      "Price: $0.003 per request.",
+      "Price: $0.50 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -73,7 +73,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["address"],
     },
-    price: "$0.003",
+    price: "$0.50",
     endpoint: "/x402/api/address/{address}/sanctions",
     method: "GET",
   },
@@ -83,7 +83,7 @@ export const tools: ToolDefinition[] = [
       "Trace fund flows for a transaction with ML-powered anomaly detection. " +
       "Returns Neo4j graph data showing nodes (addresses) and edges (transfers). " +
       "Identifies mixing, layering, and suspicious routing patterns. " +
-      "Price: $0.015 per request.",
+      "Price: $3.00 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -102,7 +102,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["tx_hash"],
     },
-    price: "$0.015",
+    price: "$3.00",
     endpoint: "/x402/api/tx/{tx_hash}/trace",
     method: "GET",
   },
@@ -111,7 +111,7 @@ export const tools: ToolDefinition[] = [
     description:
       "Detect CoinJoin, mixing, and tumbling patterns in a Bitcoin transaction. " +
       "Returns whether CoinJoin was detected and related risk detections. " +
-      "Price: $0.01 per request.",
+      "Price: $1.00 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -122,7 +122,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["tx_hash"],
     },
-    price: "$0.01",
+    price: "$1.00",
     endpoint: "/x402/api/tx/{tx_hash}/coinjoin",
     method: "GET",
   },
@@ -132,7 +132,7 @@ export const tools: ToolDefinition[] = [
       "Identify related addresses through Neo4j graph clustering analysis. " +
       "Returns cluster size, related addresses, and graph structure. " +
       "Useful for entity resolution and tracing fund networks. " +
-      "Price: $0.02 per request.",
+      "Price: $2.50 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -147,7 +147,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["address"],
     },
-    price: "$0.02",
+    price: "$2.50",
     endpoint: "/x402/api/wallet/{address}/cluster",
     method: "GET",
   },
@@ -157,7 +157,7 @@ export const tools: ToolDefinition[] = [
       "Batch AML screening for multiple addresses at once (up to 50). " +
       "Returns risk level and score for each address. " +
       "More cost-effective than individual checks for bulk analysis. " +
-      "Price: $0.05 per batch.",
+      "Price: $5.00 per batch.",
     inputSchema: {
       type: "object",
       properties: {
@@ -174,7 +174,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["addresses"],
     },
-    price: "$0.05",
+    price: "$5.00",
     endpoint: "/x402/api/batch/screening",
     method: "POST",
   },

@@ -114,7 +114,7 @@ fetch("https://chain-analyzer.com/api/v1/public/scan?address=…", {
 
 If your stack already has a Coinbase CDP wallet or any EIP-712 / SPL
 signing capability, you can call the same scan logic via x402 with
-no provisioning at all — pay $0.008 in USDC per call on Base or
+no provisioning at all — pay $1.00 in USDC per call on Base or
 Solana mainnet.
 
 ```ts

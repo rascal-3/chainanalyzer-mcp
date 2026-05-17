@@ -31,7 +31,7 @@ const server = new McpServer({
   version: "1.0.0",
 })
 
-// ── Tool: check_address_risk ($0.008) ─────────────────────────────
+// ── Tool: check_address_risk ($1.00) ─────────────────────────────
 
 server.tool(
   "check_address_risk",
@@ -54,7 +54,7 @@ server.tool(
   },
 )
 
-// ── Tool: sanctions_check ($0.003) ────────────────────────────────
+// ── Tool: sanctions_check ($0.50) ────────────────────────────────
 
 server.tool(
   "sanctions_check",
@@ -76,7 +76,7 @@ server.tool(
   },
 )
 
-// ── Tool: trace_transaction ($0.015) ──────────────────────────────
+// ── Tool: trace_transaction ($3.00) ──────────────────────────────
 
 server.tool(
   "trace_transaction",
@@ -101,7 +101,7 @@ server.tool(
   },
 )
 
-// ── Tool: detect_coinjoin ($0.01) ─────────────────────────────────
+// ── Tool: detect_coinjoin ($1.00) ─────────────────────────────────
 
 server.tool(
   "detect_coinjoin",
@@ -119,7 +119,7 @@ server.tool(
   },
 )
 
-// ── Tool: cluster_wallet ($0.02) ──────────────────────────────────
+// ── Tool: cluster_wallet ($2.50) ──────────────────────────────────
 
 server.tool(
   "cluster_wallet",
@@ -143,7 +143,7 @@ server.tool(
   },
 )
 
-// ── Tool: batch_screening ($0.05) ─────────────────────────────────
+// ── Tool: batch_screening ($5.00) ─────────────────────────────────
 
 server.tool(
   "batch_screening",
