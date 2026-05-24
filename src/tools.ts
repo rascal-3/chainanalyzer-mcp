@@ -1,7 +1,7 @@
 /**
  * ChainAnalyzer MCP Tool Definitions
  *
- * 6 AML tools matching the x402 API endpoints.
+ * 7 AML tools matching the x402 API endpoints.
  * Each tool maps to a pay-per-request endpoint on chain-analyzer.com.
  */
 
@@ -176,6 +176,54 @@ export const tools: ToolDefinition[] = [
     },
     price: "$5.00",
     endpoint: "/x402/api/batch/screening",
+    method: "POST",
+  },
+  {
+    name: "bridge_flow_trace",
+    description:
+      "Multi-hop cross-chain forensic trace for a wallet address. " +
+      "Auto-detects bridge solvers (NEAR Intents, Wormhole, deBridge, Stargate, " +
+      "Across, Synapse, Hop), follows relay chains across chains, and emits " +
+      "forensic insights including solver_detected, relay_chain, and " +
+      "same_intent_correlation (with cross-chain settlement timing). " +
+      "Returns a graph of nodes (with role classifications: solver / relay / " +
+      "user / exchange / scanned / bridge) and edges (transfer / bridge_in / " +
+      "bridge_out, with on-chain TX signatures). Ideal for compliance teams " +
+      "investigating cross-chain laundering and AI agents that need provable " +
+      "cross-chain fund-flow evidence. Price: $3.00 per request.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        address: {
+          type: "string",
+          description: "Wallet address to start the trace from",
+        },
+        chain: {
+          type: "string",
+          enum: [
+            "bitcoin",
+            "ethereum",
+            "polygon",
+            "base",
+            "arbitrum",
+            "optimism",
+            "avalanche",
+            "solana",
+          ],
+          description: "Source chain (default: solana)",
+        },
+        max_depth: {
+          type: "number",
+          description:
+            "Max BFS hops (1-4, default: 3). Higher = deeper trace but slower.",
+          minimum: 1,
+          maximum: 4,
+        },
+      },
+      required: ["address"],
+    },
+    price: "$3.00",
+    endpoint: "/x402/api/bridge-flow/trace",
     method: "POST",
   },
 ]

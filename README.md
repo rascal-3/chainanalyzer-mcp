@@ -14,6 +14,7 @@ Scan any address across **8 chains live for self-serve** — Bitcoin, Ethereum, 
 | `detect_coinjoin` | CoinJoin / mixing pattern detection (Bitcoin) | $1.00 |
 | `cluster_wallet` | Wallet clustering via Neo4j graph analysis | $2.50 |
 | `batch_screening` | Batch AML screening (up to 50 addresses) | $5.00 |
+| `bridge_flow_trace` | Multi-hop cross-chain forensic trace with Solver detection + same-intent correlation (NEAR Intents / Wormhole / Stargate / Across / Synapse / Hop / deBridge) | $3.00 |
 
 ## Quick Start
 

@@ -14,6 +14,7 @@
 | `detect_coinjoin` | CoinJoin / ミキシングパターン検出（Bitcoin） | $1.00 |
 | `cluster_wallet` | Neo4jグラフによるウォレットクラスタリング | $2.50 |
 | `batch_screening` | 一括AMLスクリーニング（最大50アドレス） | $5.00 |
+| `bridge_flow_trace` | クロスチェーン多段ブリッジ・フォレンジック追跡 (Solver 識別 + 同一インテント相関 / NEAR Intents・Wormhole・Stargate 等 7 プロトコル対応) | $3.00 |
 
 ## クイックスタート
 
