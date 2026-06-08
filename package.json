@@ -8,6 +8,14 @@
   "bin": {
     "chainanalyzer-mcp": "src/index.ts"
   },
+  "homepage": "https://github.com/rascal-3/chainanalyzer-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rascal-3/chainanalyzer-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rascal-3/chainanalyzer-mcp/issues"
+  },
   "scripts": {
     "start": "tsx src/index.ts",
     "build": "tsc",
