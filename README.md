@@ -2,7 +2,7 @@
 
 MCP Server for [ChainAnalyzer](https://chain-analyzer.com) — multi-chain blockchain AML risk analysis for AI agents.
 
-Scan any address across **8 chains live for self-serve** — Bitcoin, Ethereum, Polygon, Base, Arbitrum, Optimism, Avalanche, Solana — plus **BNB Smart Chain on Enterprise rollout** (paid Etherscan tier required, available via API key only). 76+ detection rules across 9 chains, ML anomaly scoring, and Neo4j graph analysis.
+Scan any address across **12 chains, all live for self-serve** — Bitcoin, Ethereum, Polygon, BNB Smart Chain, Base, Arbitrum, Optimism, Avalanche, Solana, Kaia, TRON, and XRP. 76+ detection rules, ML anomaly scoring, and Neo4j graph analysis.
 
 ## Tools
 

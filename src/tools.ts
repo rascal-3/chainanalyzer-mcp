@@ -36,7 +36,7 @@ export const tools: ToolDefinition[] = [
         },
         chain: {
           type: "string",
-          enum: ["bitcoin", "ethereum", "polygon", "avalanche", "solana"],
+          enum: ["bitcoin", "ethereum", "polygon", "bsc", "base", "arbitrum", "optimism", "avalanche", "solana", "kaia", "tron", "xrp"],
           description:
             "Blockchain network (auto-detected if omitted). Required for EVM chains sharing 0x format.",
         },
@@ -67,7 +67,7 @@ export const tools: ToolDefinition[] = [
         },
         chain: {
           type: "string",
-          enum: ["bitcoin", "ethereum", "polygon", "avalanche", "solana"],
+          enum: ["bitcoin", "ethereum", "polygon", "bsc", "base", "arbitrum", "optimism", "avalanche", "solana", "kaia", "tron", "xrp"],
           description: "Blockchain network (auto-detected if omitted)",
         },
       },
@@ -200,15 +200,19 @@ export const tools: ToolDefinition[] = [
         },
         chain: {
           type: "string",
+          // Bridge tracing is EVM+Solana only on the backend (bridge router
+          // validation) — tron/xrp are deliberately NOT listed here.
           enum: [
             "bitcoin",
             "ethereum",
             "polygon",
+            "bsc",
             "base",
             "arbitrum",
             "optimism",
             "avalanche",
             "solana",
+            "kaia",
           ],
           description: "Source chain (default: solana)",
         },
