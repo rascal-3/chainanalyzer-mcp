@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.rascal-3/chainanalyzer-mcp",
-  "description": "Multi-chain blockchain AML for AI agents: risk scoring, sanctions screening (OFAC/EU/UK/UN/JFSA), tx tracing, wallet clustering and cross-chain bridge tracing across 12 chains (BTC, ETH, POL, BNB, BASE, ARB, OP, AVAX, SOL, KAIA, TRX, XRP). API key or x402 USDC.",
+  "description": "Blockchain AML for AI agents: risk scoring, sanctions, tx & bridge tracing across 12 chains.",
   "repository": {
     "url": "https://github.com/rascal-3/chainanalyzer-mcp",
     "source": "github"
