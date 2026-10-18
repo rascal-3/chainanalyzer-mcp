@@ -72,7 +72,7 @@ Choose one of three modes:
 
 ### 1. API Key (all plans, including Free)
 
-Create a `tfk_` API key at [chain-analyzer.com](https://chain-analyzer.com/login?utm_source=github) → Account → Settings → API Keys. Every plan can issue keys; the Free plan includes 10 scans/month, so you can try all tools before paying. Rate limits by plan: Free 10/min, Starter 30/min, Pro 60/min, Business 120/min, Enterprise 300/min.
+Create a `tfk_` API key at [chain-analyzer.com](https://chain-analyzer.com/login?utm_source=github) → Account → Settings → API Keys. Every plan can issue keys; the Free plan includes 10 scans/month, enough to try sanctions, risk, trace, CoinJoin and cluster before paying. `batch_screening` needs Starter or above and `bridge_flow_trace` needs Business or above in API-key mode (x402 mode has no plan gates). Rate limits by plan: Free 10/min, Starter 30/min, Pro 60/min, Business 120/min, Enterprise 300/min.
 
 ```json
 {

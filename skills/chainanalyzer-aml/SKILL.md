@@ -59,7 +59,7 @@ Authentication is one of:
 | Screen a list (up to 50) | `batch_screening` | $5.00 |
 | Follow funds across bridges (NEAR Intents, Wormhole, Stargate, Across, deBridge, Hop, Synapse) | `bridge_flow_trace` | $3.00 |
 
-Costs apply only in x402 mode. In API-key mode each call consumes one scan from the plan quota (Free: 10/month).
+Costs apply only in x402 mode. In API-key mode each call consumes one scan from the plan quota (Free: 10/month; a batch consumes one scan per successfully screened address). Plan gates in API-key mode: `batch_screening` needs Starter or above (per call: Starter 10, Pro 100, Business 200, Enterprise 500 addresses), `bridge_flow_trace` needs Business or above. A `403` from one of these means the plan is too low, not a bad key: say so and suggest the upgrade or x402.
 
 ## Workflow
 

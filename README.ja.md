@@ -51,7 +51,7 @@ npm start
 
 ### 1. APIキー（サブスクリプション）
 
-[chain-analyzer.com](https://chain-analyzer.com/login?utm_source=github) にサインアップし、アカウント → 設定 → API Keysで`tfk_`APIキーを作成。Freeプランを含む全プランでキーを発行でき、Freeプランは月10スキャンまで無料で全ツールを試せます。レート制限はFree 10/分・Starter 30/分・Pro 60/分・Business 120/分・Enterprise 300/分。
+[chain-analyzer.com](https://chain-analyzer.com/login?utm_source=github) にサインアップし、アカウント → 設定 → API Keysで`tfk_`APIキーを作成。Freeプランを含む全プランでキーを発行でき、Freeプランは月10スキャンまで無料で、制裁照合・リスク判定・トランザクション追跡・CoinJoin検出・ウォレットクラスタリングを試せます。APIキーモードでは`batch_screening`はStarter以上、`bridge_flow_trace`はBusiness以上が必要です（x402モードにプラン制限はありません）。レート制限はFree 10/分・Starter 30/分・Pro 60/分・Business 120/分・Enterprise 300/分。
 
 ```json
 {
