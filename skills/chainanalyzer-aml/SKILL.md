@@ -32,8 +32,20 @@ The MCP server `chainanalyzer-aml` must be configured. If its tools are not avai
 
 Authentication is one of:
 
-- `CHAINANALYZER_API_KEY` (`tfk_...`, Pro plan or higher at https://chain-analyzer.com). Preferred.
-- `X402_PRIVATE_KEY` (+ `X402_NETWORK` = `base` | `solana`) for pay-per-request USDC via x402.
+- `CHAINANALYZER_API_KEY` (`tfk_...`). Preferred. API keys are available on every plan, including Free
+  (10 scans/month): sign up at https://chain-analyzer.com/login?utm_source=skill and create a key under
+  Account → Settings → API Keys (https://chain-analyzer.com/account/settings/api_keys).
+- `X402_PRIVATE_KEY` (+ `X402_NETWORK` = `base` | `solana`) for pay-per-request USDC via x402, no account needed.
+
+### If a call fails with an auth or payment error
+
+- `401` / `403` (missing, invalid or revoked key): stop and tell the user to create a key at the link above.
+  Do not retry with guessed keys.
+- `402 Payment Required` (x402 mode without a funded wallet, or API-key mode where the key is absent):
+  explain the two options (free API key vs. x402 wallet) and let the user choose. Never ask for or echo
+  private keys in the conversation.
+- `429` (monthly quota or per-minute rate limit): report which limit was hit and suggest upgrading or
+  waiting. Rate limits by plan: Free 10/min, Starter 30/min, Pro 60/min, Business 120/min, Enterprise 300/min.
 
 ## Tool selection
 
@@ -47,7 +59,7 @@ Authentication is one of:
 | Screen a list (up to 50) | `batch_screening` | $5.00 |
 | Follow funds across bridges (NEAR Intents, Wormhole, Stargate, Across, deBridge, Hop, Synapse) | `bridge_flow_trace` | $3.00 |
 
-Costs apply only in x402 mode. In API-key mode each call consumes one scan from the plan quota.
+Costs apply only in x402 mode. In API-key mode each call consumes one scan from the plan quota (Free: 10/month).
 
 ## Workflow
 

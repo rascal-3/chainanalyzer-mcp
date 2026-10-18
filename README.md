@@ -70,9 +70,9 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io) 
 
 Choose one of three modes:
 
-### 1. API Key (Subscription)
+### 1. API Key (all plans, including Free)
 
-Get a `tfk_` API key from [chain-analyzer.com](https://chain-analyzer.com) (Pro plan).
+Create a `tfk_` API key at [chain-analyzer.com](https://chain-analyzer.com/login?utm_source=github) → Account → Settings → API Keys. Every plan can issue keys; the Free plan includes 10 scans/month, so you can try all tools before paying. Rate limits by plan: Free 10/min, Starter 30/min, Pro 60/min, Business 120/min, Enterprise 300/min.
 
 ```json
 {
@@ -113,7 +113,7 @@ No authentication. Works when the ChainAnalyzer server has `X402_ENABLED=false`.
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `CHAINANALYZER_API_KEY` | `tfk_` API key (subscription auth) | One of API key or x402 |
+| `CHAINANALYZER_API_KEY` | `tfk_` API key (any plan, Free included) | One of API key or x402 |
 | `X402_PRIVATE_KEY` | Wallet private key for USDC payments | One of API key or x402 |
 | `X402_NETWORK` | Payment network: `base` or `solana` (default: `base`) | No |
 | `CHAINANALYZER_BASE_URL` | API base URL (default: `https://chain-analyzer.com`) | No |
@@ -150,7 +150,8 @@ All 12 chains are live for self-serve plans.
 ## Links
 
 - [ChainAnalyzer](https://chain-analyzer.com) — Web platform
-- [Documentation](https://chain-analyzer.com/docs/api) — API reference
+- [Using ChainAnalyzer from AI agents](https://chain-analyzer.com/docs/ai-agents) — skill, plugin and MCP setup guide
+- [API reference](https://chain-analyzer.com/docs/api)
 - [x402 Protocol](https://x402.org) — Pay-per-request standard
 
 ## License
