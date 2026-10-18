@@ -45,6 +45,27 @@ npm install
 npm start
 ```
 
+## Agent Skill & Claude Code Plugin
+
+The repo ships an [Agent Skill](skills/chainanalyzer-aml/SKILL.md) that tells the agent *when* to use these tools, how to pick the chain from the address format, which tool to call first, and how to report results. It works with any agent that reads `SKILL.md` (Claude Code, Cursor, Codex CLI, Gemini CLI, OpenClaw, ...).
+
+### Claude Code (plugin: MCP server + skill in one step)
+
+```
+/plugin marketplace add rascal-3/chainanalyzer-mcp
+/plugin install chainanalyzer-aml@chainanalyzer
+```
+
+Set `CHAINANALYZER_API_KEY` in your shell environment (or `X402_PRIVATE_KEY` for pay-per-request). The plugin's `.mcp.json` reads it from there.
+
+### Any other agent
+
+Copy `skills/chainanalyzer-aml/` into your agent's skills directory and configure the MCP server as shown in Quick Start.
+
+### MCP Registry
+
+Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.rascal-3/chainanalyzer-mcp`.
+
 ## Authentication
 
 Choose one of three modes:
@@ -113,11 +134,18 @@ The agent will automatically call the appropriate ChainAnalyzer tools.
 
 ## Supported Chains
 
-- **Bitcoin** — OFAC screening, dust attacks, peel chains, CoinJoin detection
-- **Ethereum** — 18+ detectors, Neo4j graph analysis, sanctions, mixers
-- **Polygon** — Full EVM AML suite, Etherscan V2 compatible
-- **Avalanche** — Full EVM AML suite, Routescan API
-- **Solana** — Token security (rug pull, honeypot), wallet drainer detection
+All 12 chains are live for self-serve plans.
+
+| Chain | Highlights |
+|-------|------------|
+| Bitcoin | OFAC screening, dust attacks, peel chains, CoinJoin detection |
+| Ethereum | 18+ detectors, Neo4j graph analysis, sanctions, mixers |
+| Polygon / BNB Smart Chain / Base / Arbitrum / Optimism / Avalanche / Kaia | Full EVM AML suite, bridge tracing |
+| Solana | Token security (rug pull, honeypot), wallet drainer detection, bridge tracing |
+| TRON | USDT flow screening, sanctions (independent scanner) |
+| XRP | Exchange / issuer labels, sanctions (independent scanner) |
+
+`bridge_flow_trace` supports EVM chains, Solana and Kaia. `detect_coinjoin` is Bitcoin only.
 
 ## Links
 

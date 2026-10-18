@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "chainanalyzer-aml": {
+      "command": "npx",
+      "args": ["-y", "chainanalyzer-mcp"],
+      "env": {
+        "CHAINANALYZER_API_KEY": "${CHAINANALYZER_API_KEY}",
+        "X402_PRIVATE_KEY": "${X402_PRIVATE_KEY:-}",
+        "X402_NETWORK": "${X402_NETWORK:-base}"
+      }
+    }
+  }
+}

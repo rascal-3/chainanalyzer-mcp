@@ -1,8 +1,8 @@
 {
   "name": "chainanalyzer-mcp",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "mcpName": "io.github.rascal-3/chainanalyzer-mcp",
-  "description": "ChainAnalyzer MCP Server — Multi-chain blockchain AML risk scoring for AI agents. 12 chains live for self-serve (BTC, ETH, POL, BNB, BASE, ARB, OP, AVAX, SOL, KAIA, TRX, XRP). x402 USDC payments on Base and Solana.",
+  "description": "ChainAnalyzer MCP Server — Multi-chain blockchain AML risk scoring, sanctions screening and cross-chain fund tracing for AI agents. 12 chains (BTC, ETH, POL, BNB, BASE, ARB, OP, AVAX, SOL, KAIA, TRX, XRP). API key or x402 USDC payments on Base and Solana. Ships with an Agent Skill and Claude Code plugin manifest.",
   "type": "module",
   "main": "src/index.ts",
   "bin": {
@@ -28,7 +28,12 @@
     "aml",
     "compliance",
     "x402",
-    "chainanalyzer"
+    "chainanalyzer",
+    "agent-skills",
+    "claude-code",
+    "claude-code-plugin",
+    "sanctions",
+    "kyt"
   ],
   "license": "MIT",
   "author": "refinancier, inc."

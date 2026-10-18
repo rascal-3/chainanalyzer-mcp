@@ -113,11 +113,18 @@ npm start
 
 ## 対応チェーン
 
-- **Bitcoin** -- OFAC照合、ダストアタック、Peel Chain、CoinJoin検出
-- **Ethereum** -- 18以上の検知ルール、Neo4jグラフ分析、制裁・ミキサー検出
-- **Polygon** -- EVM AMLフルスイート対応
-- **Avalanche** -- EVM AMLフルスイート対応
-- **Solana** -- トークンセキュリティ（ラグプル、ハニーポット）、ウォレットドレイナー検知
+12チェーンすべてがセルフサーブプランで利用可能です。
+
+| チェーン | 特徴 |
+|---------|------|
+| Bitcoin | OFAC照合、ダストアタック、Peel Chain、CoinJoin検出 |
+| Ethereum | 18以上の検知ルール、Neo4jグラフ分析、制裁・ミキサー検出 |
+| Polygon / BNB Smart Chain / Base / Arbitrum / Optimism / Avalanche / Kaia | EVM AMLフルスイート、ブリッジ追跡 |
+| Solana | トークンセキュリティ（ラグプル、ハニーポット）、ウォレットドレイナー検知、ブリッジ追跡 |
+| TRON | USDTフロー照合、制裁照合（独立スキャナ） |
+| XRP | 取引所・発行体ラベル、制裁照合（独立スキャナ） |
+
+`bridge_flow_trace`はEVMチェーン・Solana・Kaiaのみ、`detect_coinjoin`はBitcoinのみ対応です。
 
 ## リンク
 

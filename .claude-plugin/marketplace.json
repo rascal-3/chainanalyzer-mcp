@@ -1,0 +1,25 @@
+{
+  "name": "chainanalyzer",
+  "owner": {
+    "name": "refinancier, inc.",
+    "url": "https://chain-analyzer.com"
+  },
+  "metadata": {
+    "description": "ChainAnalyzer plugins for Claude Code: blockchain AML, sanctions screening and fund tracing.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "chainanalyzer-aml",
+      "source": "./",
+      "description": "Blockchain AML risk scoring, sanctions screening and cross-chain fund tracing across 12 chains. MCP server + skill.",
+      "version": "1.5.0",
+      "author": {
+        "name": "refinancier, inc."
+      },
+      "homepage": "https://chain-analyzer.com",
+      "category": "security",
+      "keywords": ["aml", "compliance", "sanctions", "blockchain", "kyt"]
+    }
+  ]
+}

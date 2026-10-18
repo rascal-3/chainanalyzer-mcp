@@ -1,0 +1,89 @@
+---
+name: chainanalyzer-aml
+description: Blockchain AML and sanctions screening for crypto addresses and transactions across 12 chains (BTC, ETH, Polygon, BNB Smart Chain, Base, Arbitrum, Optimism, Avalanche, Solana, Kaia, TRON, XRP) via the ChainAnalyzer MCP server. Use when the user asks whether a wallet or transaction is risky, sanctioned, linked to scams, mixers or hacks, wants due diligence / KYT on a counterparty address, needs to trace where funds went (including cross-chain bridges), or must screen a list of addresses for compliance.
+license: MIT
+metadata:
+  author: refinancier, inc.
+  homepage: https://chain-analyzer.com
+  mcp-server: chainanalyzer-mcp (npm)
+---
+
+# ChainAnalyzer AML skill
+
+This skill tells the agent when and how to use the `chainanalyzer-aml` MCP server tools.
+It does not replace a compliance officer: results are risk indicators with on-chain evidence,
+not legal determinations.
+
+## Prerequisites
+
+The MCP server `chainanalyzer-aml` must be configured. If its tools are not available, tell the user:
+
+```json
+{
+  "mcpServers": {
+    "chainanalyzer-aml": {
+      "command": "npx",
+      "args": ["-y", "chainanalyzer-mcp"],
+      "env": { "CHAINANALYZER_API_KEY": "tfk_..." }
+    }
+  }
+}
+```
+
+Authentication is one of:
+
+- `CHAINANALYZER_API_KEY` (`tfk_...`, Pro plan or higher at https://chain-analyzer.com). Preferred.
+- `X402_PRIVATE_KEY` (+ `X402_NETWORK` = `base` | `solana`) for pay-per-request USDC via x402.
+
+## Tool selection
+
+| Need | Tool | Cost (x402) |
+| --- | --- | --- |
+| Is this address sanctioned (OFAC / EU / UK / UN / JFSA / ScamDB)? | `sanctions_check` | $0.50 |
+| How risky is this address? Score, detections, ML anomaly | `check_address_risk` | $1.00 |
+| Where did this transaction's funds come from / go to? | `trace_transaction` | $3.00 |
+| Is this Bitcoin tx a CoinJoin / mixer / tumbler? | `detect_coinjoin` | $1.00 |
+| Which other addresses are controlled by the same actor? | `cluster_wallet` | $2.50 |
+| Screen a list (up to 50) | `batch_screening` | $5.00 |
+| Follow funds across bridges (NEAR Intents, Wormhole, Stargate, Across, deBridge, Hop, Synapse) | `bridge_flow_trace` | $3.00 |
+
+Costs apply only in x402 mode. In API-key mode each call consumes one scan from the plan quota.
+
+## Workflow
+
+1. **Identify the chain from the address format before calling anything.**
+   - `bc1...`, `1...`, `3...` → `bitcoin`
+   - `0x` + 40 hex → EVM. Ambiguous between Ethereum, Polygon, BNB Smart Chain, Base, Arbitrum, Optimism, Avalanche, Kaia. Use the chain the user named; if none, default to `ethereum` and say so.
+   - Base58, 32–44 chars, no `0`/`O`/`I`/`l` → `solana`
+   - `T` + 33 Base58 chars → `tron`
+   - `r` + 24–34 Base58 chars → `xrp`
+   - Never lower-case or otherwise normalize Base58 addresses (Bitcoin, Solana, TRON, XRP). Case is significant.
+2. **Screen cheap first.** Run `sanctions_check`, then `check_address_risk`. A sanctions hit alone is sufficient to stop and report.
+3. **Escalate only on signal or request.** Use `cluster_wallet`, `trace_transaction` or `bridge_flow_trace` when the risk level is medium or above, when detections mention mixers / bridges / drainers, or when the user explicitly asks to follow the money.
+4. **Lists go through `batch_screening`** (≤50 per call). Split larger lists and de-duplicate first; duplicates are not re-charged by the service but waste a slot.
+5. **Confirm before spending in x402 mode** when a single turn would cost more than about $5 (e.g. several traces or a batch).
+6. Pass `lang: "ja"` on `check_address_risk` when the user writes in Japanese.
+
+## Interpreting results
+
+- `risk_level` is one of `safe` / `low` / `medium` / `high` / `critical`; `risk_score` is 0–100.
+- `detections` list the rules that fired with evidence (counterparty, tx hash, amount). Quote the evidence, not just the rule name.
+- `ml_anomaly_score` is an unsupervised signal. Treat it as corroboration, never as the sole reason for a conclusion.
+- Sanctions sources are named per hit. OFAC SDN hits are the strongest; ScamDB hits are community / vendor intelligence and should be described as such.
+- `bridge_flow_trace` returns `nodes` with roles (`solver` / `relay` / `user` / `exchange` / `bridge`) and `edges` with on-chain tx signatures. `same_intent_correlation` means the source and destination legs were matched by timing and amount, which is probabilistic.
+
+## Report format
+
+Keep the answer short and evidence-first:
+
+1. One-line verdict: risk level, score, sanctions status.
+2. Key detections with the specific evidence (tx hash, counterparty label, amount).
+3. Recommended next step framed as an option for the user's compliance policy (monitor / enhanced due diligence / escalate), never as a decision to file a report.
+4. The raw address, chain and scan timestamp so the result can be reproduced.
+
+## Limitations
+
+- `bridge_flow_trace` covers EVM chains, Solana and Kaia only. It does not accept `tron` or `xrp`.
+- `detect_coinjoin` is Bitcoin only.
+- Risk scores reflect public ledger data only. They do not include KYC data, Travel Rule messages or off-chain information.
+- Do not present a `safe` result as a guarantee. Absence of detections is not evidence of legitimacy.

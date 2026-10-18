@@ -1,32 +1,39 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.rascal-3/chainanalyzer-mcp",
-  "description": "Multi-chain AML risk scoring, sanctions screening, and tx tracing across 8 chains live for self-serve (BTC, ETH, POL, BASE, ARB, OP, AVAX, SOL) plus BNB Smart Chain on Enterprise rollout.",
+  "description": "Multi-chain blockchain AML for AI agents: risk scoring, sanctions screening (OFAC/EU/UK/UN/JFSA), tx tracing, wallet clustering and cross-chain bridge tracing across 12 chains (BTC, ETH, POL, BNB, BASE, ARB, OP, AVAX, SOL, KAIA, TRX, XRP). API key or x402 USDC.",
   "repository": {
     "url": "https://github.com/rascal-3/chainanalyzer-mcp",
     "source": "github"
   },
-  "version": "1.3.0",
+  "version": "1.5.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "chainanalyzer-mcp",
-      "version": "1.3.0",
+      "version": "1.5.0",
       "transport": {
         "type": "stdio"
       },
       "environmentVariables": [
         {
-          "name": "X402_WALLET_PRIVATE_KEY",
-          "description": "EVM wallet private key used to sign x402 USDC micropayments on Base (required for pay-per-request mode)",
+          "name": "CHAINANALYZER_API_KEY",
+          "description": "ChainAnalyzer API key (tfk_...) for subscription billing (Pro plan or higher). Use this or X402_PRIVATE_KEY.",
           "isRequired": false,
           "isSecret": true
         },
         {
-          "name": "CHAINANALYZER_API_KEY",
-          "description": "ChainAnalyzer API key (tfk_...) for subscription-based billing instead of x402 micropayments",
+          "name": "X402_PRIVATE_KEY",
+          "description": "Wallet private key used to sign x402 USDC micropayments (pay-per-request mode, no account needed). Use this or CHAINANALYZER_API_KEY.",
           "isRequired": false,
           "isSecret": true
+        },
+        {
+          "name": "X402_NETWORK",
+          "description": "x402 payment network: base (default) or solana",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "base"
         },
         {
           "name": "CHAINANALYZER_BASE_URL",

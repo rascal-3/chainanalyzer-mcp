@@ -28,7 +28,7 @@ const BASE_URL =
 
 const server = new McpServer({
   name: "chainanalyzer-aml",
-  version: "1.0.0",
+  version: "1.5.0",
 })
 
 // ── Tool: check_address_risk ($1.00) ─────────────────────────────
@@ -162,6 +162,49 @@ server.tool(
     const data = await x402Request(url, {
       method: "POST",
       body: JSON.stringify({ addresses, chain }),
+    })
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
+    }
+  },
+)
+
+// ── Tool: bridge_flow_trace ($3.00) ───────────────────────────────
+
+server.tool(
+  "bridge_flow_trace",
+  "Multi-hop cross-chain forensic trace for a wallet address. Auto-detects bridge solvers (NEAR Intents, Wormhole, deBridge, Stargate, Across, Synapse, Hop), follows relay chains across chains, and returns a graph of nodes (solver / relay / user / exchange / bridge) and edges with on-chain tx signatures plus same_intent_correlation. EVM chains, Solana and Kaia only.",
+  {
+    address: z.string().describe("Wallet address to start the trace from"),
+    chain: z
+      .enum([
+        "bitcoin",
+        "ethereum",
+        "polygon",
+        "bsc",
+        "base",
+        "arbitrum",
+        "optimism",
+        "avalanche",
+        "solana",
+        "kaia",
+      ])
+      .optional()
+      .describe("Source chain (default: solana)"),
+    max_depth: z
+      .number()
+      .int()
+      .min(1)
+      .max(4)
+      .optional()
+      .describe("Max BFS hops (1-4, default: 3). Higher = deeper trace but slower."),
+  },
+  async ({ address, chain, max_depth }) => {
+    const tool = tools.find((t) => t.name === "bridge_flow_trace")!
+    const url = `${BASE_URL}${tool.endpoint}`
+    const data = await x402Request(url, {
+      method: "POST",
+      body: JSON.stringify({ address, chain, max_depth }),
     })
     return {
       content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],

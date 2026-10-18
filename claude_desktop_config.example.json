@@ -2,7 +2,7 @@
   "mcpServers": {
     "chainanalyzer-aml": {
       "command": "npx",
-      "args": ["-y", "tsx", "/path/to/chain-analyzer/packages/mcp/src/index.ts"],
+      "args": ["-y", "chainanalyzer-mcp"],
       "env": {
         "CHAINANALYZER_BASE_URL": "https://chain-analyzer.com",
 
