@@ -4,7 +4,9 @@
 # No secrets required for that; actual scans require X402_WALLET_PRIVATE_KEY
 # or CHAINANALYZER_API_KEY at runtime.
 
-FROM node:20-slim
+# Pinned to an exact patch release; bump when Node ships a security release
+# (22.23.4 = 2026-10-21 security release: tls / dns / brotli High CVEs).
+FROM node:22.23.4-slim
 
 WORKDIR /app
 
