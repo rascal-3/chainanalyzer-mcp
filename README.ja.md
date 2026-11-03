@@ -17,6 +17,10 @@
 | `batch_screening` | 一括AMLスクリーニング（最大50アドレス） | $5.00 |
 | `bridge_flow_trace` | クロスチェーン多段ブリッジ・フォレンジック追跡 (Solver 識別 + 同一インテント相関 / NEAR Intents・Wormhole・Stargate 等 7 プロトコル対応) | $3.00 |
 
+## AIエージェント開発フレームワーク向けの例
+
+LangChain・OpenAI Agents SDK・Vercel AI SDK・ElizaOSからそのまま使えるツール(x402の従量払い、またはAPIキー): [`examples/`](examples/)
+
 ## クイックスタート
 
 ### Claude Desktop / Claude Code

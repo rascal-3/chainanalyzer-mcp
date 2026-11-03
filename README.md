@@ -17,6 +17,10 @@ Scan any address across **12 chains, all live for self-serve** — Bitcoin, Ethe
 | `batch_screening` | Batch AML screening (up to 50 addresses) | $5.00 |
 | `bridge_flow_trace` | Multi-hop cross-chain forensic trace with Solver detection + same-intent correlation (NEAR Intents / Wormhole / Stargate / Across / Synapse / Hop / deBridge) | $3.00 |
 
+## Agent framework examples
+
+Ready-to-use tools for LangChain, OpenAI Agents SDK, Vercel AI SDK and ElizaOS (pay per call over x402 or with an API key): [`examples/`](examples/).
+
 ## Quick Start
 
 ### Claude Desktop / Claude Code

@@ -1,0 +1,6 @@
+# Versions verified on PyPI on 2026-11-04 (Python >=3.10).
+openai-agents==0.24.0
+httpx==0.28.1
+# x402 pay-per-call mode only (not needed with CHAINANALYZER_API_KEY):
+x402[httpx,evm]==2.26.0
+eth-account==0.14.0

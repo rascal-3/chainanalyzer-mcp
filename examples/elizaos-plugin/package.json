@@ -1,0 +1,31 @@
+{
+  "name": "plugin-chainanalyzer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "ElizaOS plugin skeleton: ChainAnalyzer AML screening (sanctions, known-hack exposure, risk score) paid per call with x402 or an API key.",
+  "main": "src/index.ts",
+  "engines": { "node": ">=20.10" },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@elizaos/core": "1.7.2",
+    "@x402/evm": "2.26.0",
+    "@x402/fetch": "2.26.0",
+    "viem": "2.56.8"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "typescript": "5.9.3"
+  },
+  "agentConfig": {
+    "pluginType": "elizaos:plugin:1.0.0",
+    "pluginParameters": {
+      "CHAINANALYZER_API_KEY": { "type": "string", "description": "ChainAnalyzer API key (tfk_...). Either this or X402_PRIVATE_KEY.", "required": false, "sensitive": true },
+      "X402_PRIVATE_KEY": { "type": "string", "description": "EVM private key of a low-balance wallet paying USDC on Base via x402.", "required": false, "sensitive": true },
+      "CHAINANALYZER_MAX_USD_PER_CALL": { "type": "string", "description": "Per-call spend cap in USD (default 1.00).", "required": false },
+      "CHAINANALYZER_DRY_RUN": { "type": "string", "description": "1 = quote the price and stop before signing.", "required": false }
+    }
+  }
+}
