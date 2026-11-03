@@ -10,6 +10,7 @@ Scan any address across **12 chains, all live for self-serve** — Bitcoin, Ethe
 |------|-------------|-------|
 | `check_address_risk` | AML risk score for any blockchain address | $1.00 |
 | `sanctions_check` | OFAC / FATF / JFSA sanctions screening | $0.50 |
+| `hack_exposure_lookup` | Is this address connected to a known hack (e.g. Binance 2026)? Verdict, hop distance from the attacker, role and lower-bound amounts per incident (EVM, TRON, Solana, Bitcoin) | $0.50 |
 | `trace_transaction` | Transaction flow tracing with ML anomaly detection | $3.00 |
 | `detect_coinjoin` | CoinJoin / mixing pattern detection (Bitcoin) | $1.00 |
 | `cluster_wallet` | Wallet clustering via Neo4j graph analysis | $2.50 |

@@ -78,6 +78,45 @@ export const tools: ToolDefinition[] = [
     method: "GET",
   },
   {
+    name: "hack_exposure_lookup",
+    description:
+      "Is this address connected to a known hack, and how? Looks the address up in the " +
+      "ChainAnalyzer stolen-funds taint ledger (published incidents only). Returns a verdict " +
+      "(none / attacker / downstream_of_hack / service_or_exchange_received) and per-incident " +
+      "hop distance from the attacker, role, lower-bound amounts and first tx. " +
+      "EVM chains, TRON, Solana and Bitcoin. An EVM address is matched on every EVM chain when " +
+      "chain is omitted. Not a legal determination. Price: $0.50 per request.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        address: {
+          type: "string",
+          description: "Blockchain address to look up",
+        },
+        chain: {
+          type: "string",
+          enum: [
+            "bitcoin",
+            "ethereum",
+            "polygon",
+            "bsc",
+            "base",
+            "arbitrum",
+            "optimism",
+            "avalanche",
+            "kaia",
+            "solana",
+            "tron",
+          ],
+          description: "Narrow the lookup to one chain (optional)",
+        },
+      },
+      required: ["address"],
+    },
+    price: "$0.50",
+    endpoint: "/x402/api/address/{address}/hack-exposure",
+    method: "GET",
+  },  {
     name: "trace_transaction",
     description:
       "Trace fund flows for a transaction with ML-powered anomaly detection. " +

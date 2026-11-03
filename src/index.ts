@@ -28,7 +28,7 @@ const BASE_URL =
 
 const server = new McpServer({
   name: "chainanalyzer-aml",
-  version: "1.5.0",
+  version: "1.6.0",
 })
 
 // ── Tool: check_address_risk ($1.00) ─────────────────────────────
@@ -68,6 +68,40 @@ server.tool(
   },
   async ({ address, chain }) => {
     const tool = tools.find((t) => t.name === "sanctions_check")!
+    const url = buildUrl(BASE_URL, tool, { address, chain })
+    const data = await x402Request(url)
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
+    }
+  },
+)
+
+// ── Tool: hack_exposure_lookup ($0.50) ───────────────────────────
+
+server.tool(
+  "hack_exposure_lookup",
+  "Is this address connected to a known hack, and how? Stolen-funds taint ledger lookup (published incidents only): verdict, hop distance from the attacker, role and lower-bound amounts per incident. Not a legal determination.",
+  {
+    address: z.string().describe("Blockchain address to look up"),
+    chain: z
+      .enum([
+        "bitcoin",
+        "ethereum",
+        "polygon",
+        "bsc",
+        "base",
+        "arbitrum",
+        "optimism",
+        "avalanche",
+        "kaia",
+        "solana",
+        "tron",
+      ])
+      .optional()
+      .describe("Narrow to one chain (EVM addresses match every EVM chain if omitted)"),
+  },
+  async ({ address, chain }) => {
+    const tool = tools.find((t) => t.name === "hack_exposure_lookup")!
     const url = buildUrl(BASE_URL, tool, { address, chain })
     const data = await x402Request(url)
     return {

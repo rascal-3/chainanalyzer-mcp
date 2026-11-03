@@ -52,6 +52,7 @@ Authentication is one of:
 | Need | Tool | Cost (x402) |
 | --- | --- | --- |
 | Is this address sanctioned (OFAC / EU / UK / UN / JFSA / ScamDB)? | `sanctions_check` | $0.50 |
+| Did this address receive stolen funds from a known hack (e.g. Binance 2026), and how many hops from the attacker? | `hack_exposure_lookup` | $0.50 |
 | How risky is this address? Score, detections, ML anomaly | `check_address_risk` | $1.00 |
 | Where did this transaction's funds come from / go to? | `trace_transaction` | $3.00 |
 | Is this Bitcoin tx a CoinJoin / mixer / tumbler? | `detect_coinjoin` | $1.00 |
