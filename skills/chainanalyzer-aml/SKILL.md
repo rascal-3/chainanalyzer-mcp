@@ -53,6 +53,8 @@ Authentication is one of:
 | --- | --- | --- |
 | Is this address sanctioned (OFAC / EU / UK / UN / JFSA / ScamDB)? | `sanctions_check` | $0.50 |
 | Did this address receive stolen funds from a known hack (e.g. Binance 2026), and how many hops from the attacker? | `hack_exposure_lookup` | $0.50 |
+| Is this address frozen by a stablecoin issuer (USDT / USDC / JPYC)? | `freeze_status` | $0.10 |
+| Screen a list of deposit addresses against known hacks at once | `hack_exposure_batch` | $5.00 |
 | How risky is this address? Score, detections, ML anomaly | `check_address_risk` | $1.00 |
 | Where did this transaction's funds come from / go to? | `trace_transaction` | $3.00 |
 | Is this Bitcoin tx a CoinJoin / mixer / tumbler? | `detect_coinjoin` | $1.00 |

@@ -117,6 +117,59 @@ export const tools: ToolDefinition[] = [
     endpoint: "/x402/api/address/{address}/hack-exposure",
     method: "GET",
   },  {
+    name: "freeze_status",
+    description:
+      "Is this address currently frozen / blacklisted by a stablecoin issuer (USDT, USDC, JPYC " +
+      "and other issuer tokens)? Returns the current state per token (latest freeze or unfreeze " +
+      "event wins), first freeze time, last event and its tx, plus `coverage` = the tokens " +
+      "indexed on the searched chains (Ethereum, Polygon, Avalanche, TRON) so that " +
+      "'not frozen' is interpretable. Absence of a freeze is not a guarantee. " +
+      "Price: $0.10 per request.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        address: {
+          type: "string",
+          description: "Blockchain address to look up",
+        },
+        chain: {
+          type: "string",
+          enum: ["ethereum", "polygon", "avalanche", "tron"],
+          description: "Narrow the lookup to one chain (optional)",
+        },
+      },
+      required: ["address"],
+    },
+    price: "$0.10",
+    endpoint: "/x402/api/address/{address}/freeze-status",
+    method: "GET",
+  },  {
+    name: "hack_exposure_batch",
+    description:
+      "Batch known-hack exposure for up to 50 addresses at once (published incidents only). " +
+      "Per address: verdict (none / attacker / downstream_of_hack / " +
+      "service_or_exchange_received) and up to 3 incidents with hop distance and role. " +
+      "Invalid addresses are listed separately without failing the batch. " +
+      "Not a legal determination. Price: $5.00 per batch (fixed, up to 50 addresses).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        addresses: {
+          type: "array",
+          items: { type: "string" },
+          description: "List of blockchain addresses to look up (max 50)",
+        },
+        chain: {
+          type: "string",
+          description: "Chain hint applied to every address (optional)",
+        },
+      },
+      required: ["addresses"],
+    },
+    price: "$5.00",
+    endpoint: "/x402/api/hack-exposure/batch",
+    method: "POST",
+  },  {
     name: "trace_transaction",
     description:
       "Trace fund flows for a transaction with ML-powered anomaly detection. " +

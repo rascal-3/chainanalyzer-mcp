@@ -13,7 +13,7 @@
       "name": "chainanalyzer-aml",
       "source": "./",
       "description": "Blockchain AML risk scoring, sanctions screening and cross-chain fund tracing across 12 chains. MCP server + skill.",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "author": {
         "name": "refinancier, inc."
       },

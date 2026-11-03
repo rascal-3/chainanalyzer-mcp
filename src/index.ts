@@ -28,7 +28,7 @@ const BASE_URL =
 
 const server = new McpServer({
   name: "chainanalyzer-aml",
-  version: "1.6.0",
+  version: "1.7.0",
 })
 
 // ── Tool: check_address_risk ($1.00) ─────────────────────────────
@@ -104,6 +104,54 @@ server.tool(
     const tool = tools.find((t) => t.name === "hack_exposure_lookup")!
     const url = buildUrl(BASE_URL, tool, { address, chain })
     const data = await x402Request(url)
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
+    }
+  },
+)
+
+// ── Tool: freeze_status ($0.10) ───────────────────────────────────
+
+server.tool(
+  "freeze_status",
+  "Is this address currently frozen / blacklisted by a stablecoin issuer? Current state per token (latest event wins), first freeze time, last event tx, and coverage (tokens indexed on the searched chains). Absence of a freeze is not a guarantee.",
+  {
+    address: z.string().describe("Blockchain address to look up"),
+    chain: z
+      .enum(["ethereum", "polygon", "avalanche", "tron"])
+      .optional()
+      .describe("Narrow to one chain (EVM addresses are checked on every indexed EVM chain if omitted)"),
+  },
+  async ({ address, chain }) => {
+    const tool = tools.find((t) => t.name === "freeze_status")!
+    const url = buildUrl(BASE_URL, tool, { address, chain })
+    const data = await x402Request(url)
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
+    }
+  },
+)
+
+// ── Tool: hack_exposure_batch ($5.00 fixed) ───────────────────────
+
+server.tool(
+  "hack_exposure_batch",
+  "Batch known-hack exposure for up to 50 addresses (published incidents only): verdict and up to 3 incidents (slug, hop, role) per address; invalid addresses listed separately. Fixed price per batch.",
+  {
+    addresses: z
+      .array(z.string())
+      .min(1)
+      .max(50)
+      .describe("Addresses to look up"),
+    chain: z.string().optional().describe("Chain hint applied to every address"),
+  },
+  async ({ addresses, chain }) => {
+    const tool = tools.find((t) => t.name === "hack_exposure_batch")!
+    const url = `${BASE_URL}${tool.endpoint}`
+    const data = await x402Request(url, {
+      method: "POST",
+      body: JSON.stringify({ addresses, chain }),
+    })
     return {
       content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
     }

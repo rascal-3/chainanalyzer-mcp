@@ -1,6 +1,6 @@
 {
   "name": "chainanalyzer-aml",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Blockchain AML risk scoring, sanctions screening and cross-chain fund tracing for AI agents. 12 chains (BTC, ETH, Polygon, BNB Smart Chain, Base, Arbitrum, Optimism, Avalanche, Solana, Kaia, TRON, XRP). Bundles the ChainAnalyzer MCP server with a skill that tells the agent when and how to use it.",
   "author": {
     "name": "refinancier, inc.",

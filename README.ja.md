@@ -11,6 +11,8 @@
 | `check_address_risk` | ブロックチェーンアドレスのAMLリスクスコア | $1.00 |
 | `sanctions_check` | OFAC / FATF / 金融庁 制裁リストスクリーニング | $0.50 |
 | `hack_exposure_lookup` | 既知の流出事件(Binance 2026など)につながるか。事件ごとの判定・攻撃者からの段数・役割・金額の下限(EVM・TRON・Solana・Bitcoin) | $0.50 |
+| `freeze_status` | ステーブルコイン(USDT・USDC・JPYCなど)を発行体が凍結しているか。トークンごとの状態と日時 | $0.10 |
+| `hack_exposure_batch` | 最大50アドレスをまとめて既知の流出事件と照合(入金アドレス一覧の審査) | $5.00 |
 | `trace_transaction` | ML異常検知付きトランザクションフロー追跡 | $3.00 |
 | `detect_coinjoin` | CoinJoin / ミキシングパターン検出（Bitcoin） | $1.00 |
 | `cluster_wallet` | Neo4jグラフによるウォレットクラスタリング | $2.50 |
