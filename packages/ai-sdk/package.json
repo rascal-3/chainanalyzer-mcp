@@ -1,0 +1,70 @@
+{
+  "name": "@chainanalyzer/ai-sdk",
+  "version": "0.1.0",
+  "description": "ChainAnalyzer blockchain AML tools for the Vercel AI SDK: sanctions screening, known-hack exposure, stablecoin freeze status and risk score across 12 chains. Pay per call in USDC via x402 or use an API key.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20.10"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ai-sdk",
+    "vercel-ai-sdk",
+    "ai-agents",
+    "tools",
+    "x402",
+    "aml",
+    "kyt",
+    "sanctions",
+    "crypto",
+    "blockchain",
+    "compliance",
+    "hack",
+    "stolen-funds"
+  ],
+  "homepage": "https://chain-analyzer.com/en/docs/ai-agents",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rascal-3/chainanalyzer-mcp.git",
+    "directory": "packages/ai-sdk"
+  },
+  "bugs": "https://github.com/rascal-3/chainanalyzer-mcp/issues",
+  "license": "MIT",
+  "author": "refinancier, inc.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@x402/evm": "2.26.0",
+    "@x402/fetch": "2.26.0",
+    "viem": "2.56.8"
+  },
+  "peerDependencies": {
+    "ai": ">=5.0.0",
+    "zod": ">=3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "ai": "7.0.162",
+    "typescript": "5.9.3",
+    "zod": "4.6.7"
+  }
+}
