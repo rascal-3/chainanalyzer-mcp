@@ -5,8 +5,8 @@
 # or CHAINANALYZER_API_KEY at runtime.
 
 # Pinned to an exact patch release; bump when Node ships a security release
-# (22.23.4 = 2026-10-21 security release: tls / dns / brotli High CVEs).
-FROM node:22.23.4-slim
+# (22.23.5 = 2026-11-11 security release: http2 / tls High CVEs).
+FROM node:22.23.5-slim
 
 WORKDIR /app
 
