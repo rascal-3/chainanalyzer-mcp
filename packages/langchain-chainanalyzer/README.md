@@ -6,13 +6,15 @@ Solana, TRON, XRP and Kaia (12 chains).
 
 | Tool | What it answers | Price (x402) |
 | --- | --- | --- |
-| `chainanalyzer_sanctions_check` | Is the address on a sanctions list (OFAC, EU, UK, UN, JFSA) or in ScamDB? | $0.50 |
-| `chainanalyzer_hack_exposure` | Is it connected to a known hack (e.g. the 2026 Binance hack)? Hops from the attacker, role, lower-bound amounts | $0.50 |
-| `chainanalyzer_freeze_status` | Has a stablecoin issuer (USDT, USDC, JPYC …) frozen it? | $0.10 |
-| `chainanalyzer_risk_score` | Full AML risk score (76+ detection rules + ML), with free hack-exposure and freeze summaries | $1.00 |
-| `chainanalyzer_hack_exposure_batch` (opt-in) | Known-hack exposure for up to 50 addresses | $5.00 |
+| `chainanalyzer_sanctions_check` | Is the address on a sanctions list (OFAC, EU, UK, UN, JFSA) or in ScamDB? | $0.05 |
+| `chainanalyzer_hack_exposure` | Is it connected to a known hack (e.g. the 2026 Binance hack)? Hops from the attacker, role, lower-bound amounts | $0.05 |
+| `chainanalyzer_freeze_status` | Has a stablecoin issuer (USDT, USDC, JPYC …) frozen it? (Ethereum, Polygon, Avalanche, TRON) | $0.02 |
+| `chainanalyzer_risk_score` | Full AML risk score (76+ detection rules + ML), with free hack-exposure and freeze summaries | $0.10 |
+| `chainanalyzer_hack_exposure_batch` (opt-in) | Known-hack exposure for up to 50 addresses | $1.00 |
 
-Pay per call in USDC on Base via [x402](https://www.x402.org/) — no account, no signup — or use a ChainAnalyzer API key.
+Prices from 2026-11-16. Pay per call in USDC on Base via [x402](https://www.x402.org/) — no account, no signup — or use a ChainAnalyzer API key.
+Use a key whose address has no EIP-7702 delegation: a delegated (smart-account) address can fail the USDC signature
+check on Base and the payment is rejected.
 
 ## Install
 
@@ -47,7 +49,7 @@ Each tool also works on its own: `await tools[1].ainvoke({"address": "0x5227f603
 | `private_key` | `X402_PRIVATE_KEY` | Hex key of a **dedicated low-balance wallet** with USDC on Base mainnet (needs the `x402` extra). |
 | `max_usd_per_call` | `CHAINANALYZER_MAX_USD_PER_CALL` | Cap per payment, enforced before signing. Default `1.00`. |
 | `dry_run` | `CHAINANALYZER_DRY_RUN=1` | Stop before signing and return the quoted price. |
-| `include_batch` | — | Adds the $5.00 batch tool (also raise `max_usd_per_call` to `5.00`). |
+| `include_batch` | — | Adds the $1.00 batch tool (the default `max_usd_per_call` covers it). |
 
 - Results are automated screening signals, **not a legal determination**. Hack exposure is a lower-bound taint over
   published incidents only; no match (or no freeze) is not proof that funds are clean. Keep a human in the loop.

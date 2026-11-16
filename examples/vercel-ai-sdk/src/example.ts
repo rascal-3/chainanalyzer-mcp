@@ -19,9 +19,9 @@ const { text } = await generateText({
   tools: chainAnalyzerTools(),
   stopWhen: stepCountIs(5), // bounds the number of paid tool calls
   system: `You screen incoming crypto deposits before they are credited.
-1. Call chainanalyzer_sanctions_check first ($0.50). sanctioned=true -> HOLD, stop.
-2. Call chainanalyzer_hack_exposure ($0.50). matched=true -> REVIEW, cite incident, hop and role.
-3. Only for large amounts with both checks clean, call chainanalyzer_risk_score ($1.00):
+1. Call chainanalyzer_sanctions_check first ($0.05). sanctioned=true -> HOLD, stop.
+2. Call chainanalyzer_hack_exposure ($0.05). matched=true -> REVIEW, cite incident, hop and role.
+3. Only for large amounts with both checks clean, call chainanalyzer_risk_score ($0.10):
    severity HIGH/CRITICAL -> REVIEW, otherwise CREDIT.
 Never repeat a call. Answer: decision (CREDIT / REVIEW / HOLD), one-line reason, tools used,
 total USDC cost, and a note that this is not a legal determination.`,

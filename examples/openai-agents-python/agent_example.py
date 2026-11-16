@@ -16,9 +16,9 @@ from agents import Agent, Runner
 from chainanalyzer_agents import CHAINANALYZER_TOOLS, close_client
 
 INSTRUCTIONS = """You screen incoming crypto deposits before they are credited.
-1. Call chainanalyzer_sanctions_check first ($0.50). sanctioned=true -> HOLD, stop.
-2. Call chainanalyzer_hack_exposure ($0.50). matched=true -> REVIEW, cite incident, hop and role.
-3. Only for large amounts with both checks clean, call chainanalyzer_risk_score ($1.00):
+1. Call chainanalyzer_sanctions_check first ($0.05). sanctioned=true -> HOLD, stop.
+2. Call chainanalyzer_hack_exposure ($0.05). matched=true -> REVIEW, cite incident, hop and role.
+3. Only for large amounts with both checks clean, call chainanalyzer_risk_score ($0.10):
    severity HIGH/CRITICAL -> REVIEW, otherwise CREDIT.
 Never repeat a call for the same address. Answer with decision (CREDIT / REVIEW / HOLD),
 a one-line reason, tools used and total USDC cost, and note it is not a legal determination."""

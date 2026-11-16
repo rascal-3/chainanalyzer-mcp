@@ -3,7 +3,7 @@
     from chainanalyzer_agents import CHAINANALYZER_TOOLS
     agent = Agent(name="screener", tools=CHAINANALYZER_TOOLS, ...)
 
-x402 prices: sanctions $0.50, hack exposure $0.50, risk score $1.00.
+x402 prices: sanctions $0.05, hack exposure $0.05, risk score $0.10.
 """
 
 from __future__ import annotations
@@ -45,7 +45,7 @@ def _wrap(result: dict) -> str:
 
 @function_tool
 async def chainanalyzer_sanctions_check(address: str, chain: Optional[Chain] = None) -> str:
-    """Screen a blockchain address against OFAC / FATF / JFSA sanctions lists. Costs $0.50 USDC per call.
+    """Screen a blockchain address against OFAC / FATF / JFSA sanctions lists. Costs $0.05 USDC per call.
 
     Args:
         address: Address to screen, exactly as received (do not lowercase base58).
@@ -59,7 +59,7 @@ async def chainanalyzer_sanctions_check(address: str, chain: Optional[Chain] = N
 
 @function_tool
 async def chainanalyzer_hack_exposure(address: str, chain: Optional[HackChain] = None) -> str:
-    """Is this address connected to a known hack (published incidents only)? Costs $0.50 USDC per call.
+    """Is this address connected to a known hack (published incidents only)? Costs $0.05 USDC per call.
 
     Returns verdict, hop distance from the attacker, role and lower-bound amounts per incident.
     Not a legal determination.
@@ -78,7 +78,7 @@ async def chainanalyzer_hack_exposure(address: str, chain: Optional[HackChain] =
 async def chainanalyzer_risk_score(
     address: str, chain: Optional[Chain] = None, lang: Optional[Literal["en", "ja"]] = None
 ) -> str:
-    """Full AML risk score (0-100, severity, detections, ML anomaly score, free hack_exposure summary). Costs $1.00 USDC.
+    """Full AML risk score (0-100, severity, detections, ML anomaly score, free hack_exposure summary). Costs $0.10 USDC.
 
     Args:
         address: Address to score.

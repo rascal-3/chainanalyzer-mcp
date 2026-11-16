@@ -1,6 +1,6 @@
 {
   "name": "@chainanalyzer/ai-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "ChainAnalyzer blockchain AML tools for the Vercel AI SDK: sanctions screening, known-hack exposure, stablecoin freeze status and risk score across 12 chains. Pay per call in USDC via x402 or use an API key.",
   "type": "module",
   "main": "./dist/index.js",

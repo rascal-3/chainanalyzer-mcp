@@ -14,9 +14,9 @@ Live route list and prices: <https://chain-analyzer.com/x402/api/discover>.
 
 | Route | Price |
 | --- | --- |
-| `GET /x402/api/address/{address}/sanctions` | $0.50 |
-| `GET /x402/api/address/{address}/hack-exposure` | $0.50 |
-| `GET /x402/api/address/{address}/risk-score` (includes a free `hack_exposure` summary) | $1.00 |
+| `GET /x402/api/address/{address}/sanctions` | $0.05 |
+| `GET /x402/api/address/{address}/hack-exposure` | $0.05 |
+| `GET /x402/api/address/{address}/risk-score` (includes a free `hack_exposure` summary) | $0.10 |
 
 ## Auth
 

@@ -29,13 +29,13 @@ from langchain_chainanalyzer._version import __version__
 DEFAULT_BASE_URL = "https://chain-analyzer.com"
 BASE_MAINNET = "eip155:8453"  # CAIP-2 id of Base mainnet
 
-#: x402 list prices in USDC. Live list: https://chain-analyzer.com/x402/api/discover
+#: x402 list prices in USDC from 2026-11-16. Live list: https://chain-analyzer.com/x402/api/discover
 PRICES_USD = {
-    "risk-score": "1.00",
-    "sanctions": "0.50",
-    "hack-exposure": "0.50",
-    "freeze-status": "0.10",
-    "hack-exposure-batch": "5.00",
+    "risk-score": "0.10",
+    "sanctions": "0.05",
+    "hack-exposure": "0.05",
+    "freeze-status": "0.02",
+    "hack-exposure-batch": "1.00",
 }
 
 SUPPORTED_CHAINS = (
@@ -162,27 +162,27 @@ class ChainAnalyzerClient:
         return quote(address, safe="")
 
     async def sanctions(self, address: str, chain: Optional[str] = None) -> dict[str, Any]:
-        """$0.50 — sanctions lists (OFAC, EU, UK, UN, JFSA) and ScamDB."""
+        """$0.05 — sanctions lists (OFAC, EU, UK, UN, JFSA) and ScamDB."""
         return await self._request("GET", f"/x402/api/address/{self._addr(address)}/sanctions", {"chain": chain})
 
     async def hack_exposure(self, address: str, chain: Optional[str] = None) -> dict[str, Any]:
-        """$0.50 — connection to a known (published) hack."""
+        """$0.05 — connection to a known (published) hack."""
         return await self._request("GET", f"/x402/api/address/{self._addr(address)}/hack-exposure", {"chain": chain})
 
     async def freeze_status(self, address: str, chain: Optional[str] = None) -> dict[str, Any]:
-        """$0.10 — frozen / blacklisted by a stablecoin issuer?"""
+        """$0.02 — frozen / blacklisted by a stablecoin issuer?"""
         return await self._request("GET", f"/x402/api/address/{self._addr(address)}/freeze-status", {"chain": chain})
 
     async def risk_score(
         self, address: str, chain: Optional[str] = None, lang: Optional[str] = None
     ) -> dict[str, Any]:
-        """$1.00 — full AML risk score with free hack-exposure and freeze-status summaries."""
+        """$0.10 — full AML risk score with free hack-exposure and freeze-status summaries."""
         return await self._request(
             "GET", f"/x402/api/address/{self._addr(address)}/risk-score", {"chain": chain, "lang": lang}
         )
 
     async def hack_exposure_batch(self, addresses: list[str], chain: Optional[str] = None) -> dict[str, Any]:
-        """$5.00 per call — known-hack exposure for up to 50 addresses."""
+        """$1.00 per call — known-hack exposure for up to 50 addresses."""
         body: dict[str, Any] = {"addresses": addresses}
         if chain:
             body["chain"] = chain

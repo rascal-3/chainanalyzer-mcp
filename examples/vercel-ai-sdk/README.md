@@ -5,9 +5,9 @@ paid per call with [x402](https://www.x402.org/) (`@x402/fetch`) or with an API 
 
 | Tool | Route | Price (x402) |
 | --- | --- | --- |
-| `chainanalyzer_sanctions_check` | `GET /x402/api/address/{address}/sanctions` | $0.50 |
-| `chainanalyzer_hack_exposure` | `GET /x402/api/address/{address}/hack-exposure` | $0.50 |
-| `chainanalyzer_risk_score` | `GET /x402/api/address/{address}/risk-score` (includes a free `hack_exposure` summary) | $1.00 |
+| `chainanalyzer_sanctions_check` | `GET /x402/api/address/{address}/sanctions` | $0.05 |
+| `chainanalyzer_hack_exposure` | `GET /x402/api/address/{address}/hack-exposure` | $0.05 |
+| `chainanalyzer_risk_score` | `GET /x402/api/address/{address}/risk-score` (includes a free `hack_exposure` summary) | $0.10 |
 
 Tested against `ai@7.0.162`, `zod@4.6.7`, `@x402/fetch@2.26.0`, `@x402/evm@2.26.0`, `viem@2.56.8`.
 
@@ -35,7 +35,7 @@ const { text } = await generateText({
 ```
 
 [`src/example.ts`](src/example.ts) is the "screen this deposit address before crediting" agent:
-sanctions first, then hack exposure, and the $1.00 risk score only when needed.
+sanctions first, then hack exposure, and the $0.10 risk score only when needed.
 
 ## Auth modes
 

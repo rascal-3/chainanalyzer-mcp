@@ -35,7 +35,8 @@ Authentication is one of:
 - `CHAINANALYZER_API_KEY` (`tfk_...`). Preferred. API keys are available on every plan, including Free
   (10 scans/month): sign up at https://chain-analyzer.com/login?utm_source=skill and create a key under
   Account → Settings → API Keys (https://chain-analyzer.com/account/settings/api_keys).
-- `X402_PRIVATE_KEY` (+ `X402_NETWORK` = `base` | `solana`) for pay-per-request USDC via x402, no account needed.
+- `X402_PRIVATE_KEY` for pay-per-request USDC on Base via x402, no account needed. The paying address must not
+  have an EIP-7702 delegation (a delegated address can fail the USDC signature check and the payment is rejected).
 
 ### If a call fails with an auth or payment error
 
@@ -51,16 +52,16 @@ Authentication is one of:
 
 | Need | Tool | Cost (x402) |
 | --- | --- | --- |
-| Is this address sanctioned (OFAC / EU / UK / UN / JFSA / ScamDB)? | `sanctions_check` | $0.50 |
-| Did this address receive stolen funds from a known hack (e.g. Binance 2026), and how many hops from the attacker? | `hack_exposure_lookup` | $0.50 |
-| Is this address frozen by a stablecoin issuer (USDT / USDC / JPYC)? | `freeze_status` | $0.10 |
-| Screen a list of deposit addresses against known hacks at once | `hack_exposure_batch` | $5.00 |
-| How risky is this address? Score, detections, ML anomaly | `check_address_risk` | $1.00 |
-| Where did this transaction's funds come from / go to? | `trace_transaction` | $3.00 |
-| Is this Bitcoin tx a CoinJoin / mixer / tumbler? | `detect_coinjoin` | $1.00 |
-| Which other addresses are controlled by the same actor? | `cluster_wallet` | $2.50 |
-| Screen a list (up to 50) | `batch_screening` | $5.00 |
-| Follow funds across bridges (NEAR Intents, Wormhole, Stargate, Across, deBridge, Hop, Synapse) | `bridge_flow_trace` | $3.00 |
+| Is this address sanctioned (OFAC / EU / UK / UN / JFSA / ScamDB)? | `sanctions_check` | $0.05 |
+| Did this address receive stolen funds from a known hack (e.g. Binance 2026), and how many hops from the attacker? | `hack_exposure_lookup` | $0.05 |
+| Is this address frozen by a stablecoin issuer (USDT / USDC / JPYC)? | `freeze_status` | $0.02 |
+| Screen a list of deposit addresses against known hacks at once (up to 50) | `hack_exposure_batch` | $1.00 |
+| How risky is this address? Score, detections, ML anomaly | `check_address_risk` | $0.10 |
+| Where did this transaction's funds come from / go to? | `trace_transaction` | $0.30 |
+| Is this Bitcoin tx a CoinJoin? (`is_coinjoin`, `mixer_type`, input / output counts, equal-value output groups) | `detect_coinjoin` | $0.10 |
+| Which other addresses are controlled by the same actor? | `cluster_wallet` | $0.25 |
+| Screen a list (up to 50) | `batch_screening` | $2.50 |
+| Follow funds across bridges (NEAR Intents, Wormhole, Stargate, Across, deBridge, Hop, Synapse) | `bridge_flow_trace` | $0.50 |
 
 Costs apply only in x402 mode. In API-key mode each call consumes one scan from the plan quota (Free: 10/month; a batch consumes one scan per successfully screened address). Plan gates in API-key mode: `batch_screening` needs Starter or above (up to 50 addresses per call, 10 on Starter), `bridge_flow_trace` needs Business or above. A `403` from one of these means the plan is too low, not a bad key: say so and suggest the upgrade or x402.
 
@@ -76,7 +77,7 @@ Costs apply only in x402 mode. In API-key mode each call consumes one scan from 
 2. **Screen cheap first.** Run `sanctions_check`, then `check_address_risk`. A sanctions hit alone is sufficient to stop and report.
 3. **Escalate only on signal or request.** Use `cluster_wallet`, `trace_transaction` or `bridge_flow_trace` when the risk level is medium or above, when detections mention mixers / bridges / drainers, or when the user explicitly asks to follow the money.
 4. **Lists go through `batch_screening`** (≤50 per call). Split larger lists and de-duplicate first; duplicates are not re-charged by the service but waste a slot.
-5. **Confirm before spending in x402 mode** when a single turn would cost more than about $5 (e.g. several traces or a batch).
+5. **Confirm before spending in x402 mode** when a single turn would cost more than about $1 (e.g. several traces or a batch).
 6. Pass `lang: "ja"` on `check_address_risk` when the user writes in Japanese.
 
 ## Interpreting results
@@ -98,7 +99,8 @@ Keep the answer short and evidence-first:
 
 ## Limitations
 
-- `bridge_flow_trace` covers EVM chains, Solana and Kaia only. It does not accept `tron` or `xrp`.
-- `detect_coinjoin` is Bitcoin only.
+- `bridge_flow_trace` starts from EVM chains (Kaia included) or Solana only. It does not accept `bitcoin`, `tron` or `xrp`.
+- `detect_coinjoin` is Bitcoin only and takes a transaction id, not an address.
+- `freeze_status` covers Ethereum, Polygon, Avalanche and TRON. `hack_exposure_lookup` / `hack_exposure_batch` cover EVM chains, TRON, Solana and Bitcoin.
 - Risk scores reflect public ledger data only. They do not include KYC data, Travel Rule messages or off-chain information.
 - Do not present a `safe` result as a guarantee. Absence of detections is not evidence of legitimacy.

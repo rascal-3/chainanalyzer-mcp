@@ -4,7 +4,7 @@
  *   import { chainAnalyzerTools } from "./tools"
  *   await generateText({ model, tools: chainAnalyzerTools(), prompt })
  *
- * x402 prices: sanctions $0.50, hack exposure $0.50, risk score $1.00 (USDC on Base).
+ * x402 prices: sanctions $0.05, hack exposure $0.05, risk score $0.10 (USDC on Base).
  */
 import { tool } from "ai"
 import { z } from "zod"

@@ -6,9 +6,9 @@ Solana, Kaia, TRON, XRP):
 
 | Tool | Route | Price (x402) |
 | --- | --- | --- |
-| `chainanalyzer_sanctions_check` | `GET /x402/api/address/{address}/sanctions` | $0.50 |
-| `chainanalyzer_hack_exposure` | `GET /x402/api/address/{address}/hack-exposure` | $0.50 |
-| `chainanalyzer_risk_score` | `GET /x402/api/address/{address}/risk-score` (includes a free `hack_exposure` summary) | $1.00 |
+| `chainanalyzer_sanctions_check` | `GET /x402/api/address/{address}/sanctions` | $0.05 |
+| `chainanalyzer_hack_exposure` | `GET /x402/api/address/{address}/hack-exposure` | $0.05 |
+| `chainanalyzer_risk_score` | `GET /x402/api/address/{address}/risk-score` (includes a free `hack_exposure` summary) | $0.10 |
 
 Full route list and prices: <https://chain-analyzer.com/x402/api/discover>.
 
@@ -37,7 +37,7 @@ python agent_example.py 0xSenderAddress ethereum             # real calls
 ```
 
 The system prompt in [`agent_example.py`](agent_example.py) runs sanctions first,
-then hack exposure, and only escalates to the $1.00 risk score when needed, and
+then hack exposure, and only escalates to the $0.10 risk score when needed, and
 ends with `CREDIT / REVIEW / HOLD` plus the total cost.
 
 ## Auth modes

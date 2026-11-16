@@ -17,9 +17,9 @@ import { privateKeyToAccount } from "viem/accounts"
 export const BASE_MAINNET = "eip155:8453" as const
 
 export const PRICES_USD = {
-  riskScore: "1.00",
-  sanctions: "0.50",
-  hackExposure: "0.50",
+  riskScore: "0.10",
+  sanctions: "0.05",
+  hackExposure: "0.05",
 } as const
 
 export const CHAINS = [

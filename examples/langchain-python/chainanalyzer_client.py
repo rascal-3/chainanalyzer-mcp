@@ -31,9 +31,9 @@ BASE_MAINNET = "eip155:8453"  # CAIP-2 id of Base mainnet
 
 # List prices (USDC) from https://chain-analyzer.com/x402/api/discover
 PRICES_USD = {
-    "risk-score": "1.00",
-    "sanctions": "0.50",
-    "hack-exposure": "0.50",
+    "risk-score": "0.10",
+    "sanctions": "0.05",
+    "hack-exposure": "0.05",
 }
 
 SUPPORTED_CHAINS = (

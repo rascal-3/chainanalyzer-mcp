@@ -24,8 +24,8 @@ export interface ChainAnalyzerToolsOptions extends ChainAnalyzerOptions {
   /** Reuse an existing client instead of building one from the options. */
   client?: ChainAnalyzerClient
   /**
-   * Include the $5.00 batch tool. Off by default so an agent cannot spend $5 in one step
-   * unless you opt in (also raise maxUsdPerCall to at least "5.00").
+   * Include the $1.00 batch tool (up to 50 addresses). Off by default so an agent cannot
+   * screen a whole list in one step unless you opt in. The default maxUsdPerCall ("1.00") covers it.
    */
   includeBatch?: boolean
 }

@@ -4,9 +4,9 @@ Three `@function_tool`s (strict JSON schema) for crypto AML screening across 12 
 
 | Tool | Route | Price (x402) |
 | --- | --- | --- |
-| `chainanalyzer_sanctions_check` | `GET /x402/api/address/{address}/sanctions` | $0.50 |
-| `chainanalyzer_hack_exposure` | `GET /x402/api/address/{address}/hack-exposure` | $0.50 |
-| `chainanalyzer_risk_score` | `GET /x402/api/address/{address}/risk-score` (includes a free `hack_exposure` summary) | $1.00 |
+| `chainanalyzer_sanctions_check` | `GET /x402/api/address/{address}/sanctions` | $0.05 |
+| `chainanalyzer_hack_exposure` | `GET /x402/api/address/{address}/hack-exposure` | $0.05 |
+| `chainanalyzer_risk_score` | `GET /x402/api/address/{address}/risk-score` (includes a free `hack_exposure` summary) | $0.10 |
 
 ## Quickstart
 

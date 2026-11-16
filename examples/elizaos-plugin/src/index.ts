@@ -1,8 +1,8 @@
 /**
  * ElizaOS plugin skeleton: ChainAnalyzer AML screening actions.
  *
- * Actions: CHAINANALYZER_SANCTIONS_CHECK ($0.50), CHAINANALYZER_HACK_EXPOSURE ($0.50),
- *          CHAINANALYZER_RISK_SCORE ($1.00) - USDC per call in x402 mode.
+ * Actions: CHAINANALYZER_SANCTIONS_CHECK ($0.05), CHAINANALYZER_HACK_EXPOSURE ($0.05),
+ *          CHAINANALYZER_RISK_SCORE ($0.10) - USDC per call in x402 mode.
  *
  * Settings (character `settings.secrets` or environment; never hard-coded):
  *   CHAINANALYZER_API_KEY | X402_PRIVATE_KEY, optional CHAINANALYZER_MAX_USD_PER_CALL, CHAINANALYZER_DRY_RUN

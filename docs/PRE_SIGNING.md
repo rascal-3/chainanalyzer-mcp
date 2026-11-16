@@ -114,8 +114,10 @@ fetch("https://chain-analyzer.com/api/v1/public/scan?address=…", {
 
 If your stack already has a Coinbase CDP wallet or any EIP-712 / SPL
 signing capability, you can call the same scan logic via x402 with
-no provisioning at all — pay $1.00 in USDC per call on Base or
-Solana mainnet.
+no provisioning at all — pay $0.10 in USDC per risk-score call on Base
+or Solana mainnet (Solana when the 402 response offers it). Pay from an
+address with no EIP-7702 delegation: a delegated (smart-account) address
+can fail the USDC signature check on Base.
 
 ```ts
 import { wrapFetchWithPayment } from "x402-fetch"

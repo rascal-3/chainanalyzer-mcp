@@ -8,16 +8,18 @@
 
 | ツール | 説明 | 料金 |
 |--------|------|------|
-| `check_address_risk` | ブロックチェーンアドレスのAMLリスクスコア | $1.00 |
-| `sanctions_check` | OFAC / FATF / 金融庁 制裁リストスクリーニング | $0.50 |
-| `hack_exposure_lookup` | 既知の流出事件(Binance 2026など)につながるか。事件ごとの判定・攻撃者からの段数・役割・金額の下限(EVM・TRON・Solana・Bitcoin) | $0.50 |
-| `freeze_status` | ステーブルコイン(USDT・USDC・JPYCなど)を発行体が凍結しているか。トークンごとの状態と日時 | $0.10 |
-| `hack_exposure_batch` | 最大50アドレスをまとめて既知の流出事件と照合(入金アドレス一覧の審査) | $5.00 |
-| `trace_transaction` | ML異常検知付きトランザクションフロー追跡 | $3.00 |
-| `detect_coinjoin` | CoinJoin / ミキシングパターン検出（Bitcoin） | $1.00 |
-| `cluster_wallet` | Neo4jグラフによるウォレットクラスタリング | $2.50 |
-| `batch_screening` | 一括AMLスクリーニング（最大50アドレス） | $5.00 |
-| `bridge_flow_trace` | クロスチェーン多段ブリッジ・フォレンジック追跡 (Solver 識別 + 同一インテント相関 / NEAR Intents・Wormhole・Stargate 等 7 プロトコル対応) | $3.00 |
+| `check_address_risk` | ブロックチェーンアドレスのAMLリスクスコア(12チェーン) | $0.10 |
+| `sanctions_check` | OFAC / FATF / 金融庁 制裁リストスクリーニング(12チェーン) | $0.05 |
+| `hack_exposure_lookup` | 既知の流出事件(Binance 2026など)につながるか。事件ごとの判定・攻撃者からの段数・役割・金額の下限(EVM・TRON・Solana・Bitcoin) | $0.05 |
+| `freeze_status` | ステーブルコイン(USDT・USDC・JPYCなど)を発行体が凍結しているか。トークンごとの状態と日時(Ethereum・Polygon・Avalanche・TRON) | $0.02 |
+| `hack_exposure_batch` | 最大50アドレスをまとめて既知の流出事件と照合(入金アドレス一覧の審査) | $1.00 |
+| `trace_transaction` | ML異常検知付きトランザクションフロー追跡(12チェーン) | $0.30 |
+| `detect_coinjoin` | Bitcoinの取引IDを受け取り、取引の構造からCoinJoinかを判定。`is_coinjoin`・`mixer_type`・入力/出力の本数・同額の出力の組を返す | $0.10 |
+| `cluster_wallet` | Neo4jグラフによるウォレットクラスタリング | $0.25 |
+| `batch_screening` | 一括AMLスクリーニング(最大50アドレス・12チェーン) | $2.50 |
+| `bridge_flow_trace` | クロスチェーン多段ブリッジ・フォレンジック追跡(Solver識別+同一インテント相関/NEAR Intents・Wormhole・Stargate等7プロトコル対応)。起点はEVMチェーンまたはSolana | $0.50 |
+
+料金はx402モードでの1回あたりの価格(USDC・2026-11-16から)。最新の一覧は<https://chain-analyzer.com/x402/api/discover>。一括のツールは50アドレスまで1回の定額です。
 
 ## AIエージェント開発フレームワーク向けの例
 
@@ -70,7 +72,7 @@ npm start
 
 ### 2. x402 USDC決済（従量課金）
 
-アカウント不要。BaseまたはSolana上のUSDCでリクエストごとに支払い。
+アカウント不要。このMCPサーバーはBase上のUSDCでリクエストごとに支払います(ChainAnalyzerのx402 APIは、402の応答でSolanaを案内しているときSolana上のUSDCでも受け付けますが、Solanaで払うにはSolanaに対応したx402クライアントが必要で、このサーバーは対応していません)。
 
 ```json
 {
@@ -82,6 +84,8 @@ npm start
 ```
 
 `x402` npmパッケージが必要: `npm install x402`
+
+> **EIP-7702の委任が無いアドレスの鍵を使ってください。**支払い元のアドレスにEIP-7702の委任(スマートアカウント化)が付いていると、Base上のUSDCの署名の確認が通らず、支払いが失敗することがあります。
 
 ### 3. 開発モード
 
@@ -101,7 +105,7 @@ npm start
 |------|------|------|
 | `CHAINANALYZER_API_KEY` | `tfk_` APIキー（サブスクリプション認証） | APIキーまたはx402のいずれか |
 | `X402_PRIVATE_KEY` | USDC決済用ウォレット秘密鍵 | APIキーまたはx402のいずれか |
-| `X402_NETWORK` | 決済ネットワーク: `base` または `solana`（デフォルト: `base`） | いいえ |
+| `X402_NETWORK` | 決済ネットワーク(デフォルト: `base`)。このサーバーの支払いは`base`のみ | いいえ |
 | `CHAINANALYZER_BASE_URL` | APIベースURL（デフォルト: `https://chain-analyzer.com`） | いいえ |
 
 ## 使用例
@@ -131,7 +135,7 @@ npm start
 | TRON | USDTフロー照合、制裁照合（独立スキャナ） |
 | XRP | 取引所・発行体ラベル、制裁照合（独立スキャナ） |
 
-`bridge_flow_trace`はEVMチェーン・Solana・Kaiaのみ、`detect_coinjoin`はBitcoinのみ対応です。
+`bridge_flow_trace`の起点はEVMチェーン(Kaiaを含む)またはSolana、`detect_coinjoin`はBitcoinのみ対応です。`freeze_status`はEthereum・Polygon・Avalanche・TRON、`hack_exposure_lookup`/`hack_exposure_batch`はEVMチェーン・TRON・Solana・Bitcoinが対象です。
 
 ## リンク
 

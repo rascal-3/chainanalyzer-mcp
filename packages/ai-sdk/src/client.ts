@@ -16,13 +16,13 @@ import { privateKeyToAccount } from "viem/accounts"
 
 export const BASE_MAINNET = "eip155:8453" as const
 
-/** x402 prices in USDC (the live list is at https://chain-analyzer.com/x402/api/discover). */
+/** x402 prices in USDC from 2026-11-16 (the live list is at https://chain-analyzer.com/x402/api/discover). */
 export const PRICES_USD = {
-  riskScore: "1.00",
-  sanctions: "0.50",
-  hackExposure: "0.50",
-  freezeStatus: "0.10",
-  hackExposureBatch: "5.00",
+  riskScore: "0.10",
+  sanctions: "0.05",
+  hackExposure: "0.05",
+  freezeStatus: "0.02",
+  hackExposureBatch: "1.00",
 } as const
 
 export const CHAINS = [
@@ -118,23 +118,23 @@ export class ChainAnalyzerClient {
     return resp.json()
   }
 
-  /** $0.50 — OFAC / EU / UK / UN / JFSA sanctions and ScamDB. */
+  /** $0.05 — OFAC / EU / UK / UN / JFSA sanctions and ScamDB. */
   sanctions(address: string, chain?: Chain) {
     return this.request("GET", `/x402/api/address/${encodeURIComponent(address)}/sanctions`, { chain })
   }
-  /** $0.50 — connection to a known (published) hack: verdict, hops from the attacker, role, lower-bound amounts. */
+  /** $0.05 — connection to a known (published) hack: verdict, hops from the attacker, role, lower-bound amounts. */
   hackExposure(address: string, chain?: HackChain) {
     return this.request("GET", `/x402/api/address/${encodeURIComponent(address)}/hack-exposure`, { chain })
   }
-  /** $1.00 — full AML risk score; includes free hack_exposure and freeze_status summaries. */
+  /** $0.10 — full AML risk score; includes free hack_exposure and freeze_status summaries. */
   riskScore(address: string, chain?: Chain, lang?: "en" | "ja") {
     return this.request("GET", `/x402/api/address/${encodeURIComponent(address)}/risk-score`, { chain, lang })
   }
-  /** $0.10 — is the address frozen / blacklisted by a stablecoin issuer (USDT, USDC, JPYC …)? */
+  /** $0.02 — is the address frozen / blacklisted by a stablecoin issuer (USDT, USDC, JPYC …)? */
   freezeStatus(address: string, chain?: Chain) {
     return this.request("GET", `/x402/api/address/${encodeURIComponent(address)}/freeze-status`, { chain })
   }
-  /** $5.00 per call — known-hack exposure for up to 50 addresses. */
+  /** $1.00 per call — known-hack exposure for up to 50 addresses. */
   hackExposureBatch(addresses: string[], chain?: HackChain) {
     return this.request("POST", "/x402/api/hack-exposure/batch", {}, { addresses, chain })
   }

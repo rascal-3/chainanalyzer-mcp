@@ -8,16 +8,18 @@ Scan any address across **12 chains, all live for self-serve** — Bitcoin, Ethe
 
 | Tool | Description | Price |
 |------|-------------|-------|
-| `check_address_risk` | AML risk score for any blockchain address | $1.00 |
-| `sanctions_check` | OFAC / FATF / JFSA sanctions screening | $0.50 |
-| `hack_exposure_lookup` | Is this address connected to a known hack (e.g. Binance 2026)? Verdict, hop distance from the attacker, role and lower-bound amounts per incident (EVM, TRON, Solana, Bitcoin) | $0.50 |
-| `freeze_status` | Is this address frozen / blacklisted by a stablecoin issuer (USDT, USDC, JPYC ...)? Current state per token with timestamps | $0.10 |
-| `hack_exposure_batch` | Known-hack exposure for up to 50 addresses in one call (deposit-list screening) | $5.00 |
-| `trace_transaction` | Transaction flow tracing with ML anomaly detection | $3.00 |
-| `detect_coinjoin` | CoinJoin / mixing pattern detection (Bitcoin) | $1.00 |
-| `cluster_wallet` | Wallet clustering via Neo4j graph analysis | $2.50 |
-| `batch_screening` | Batch AML screening (up to 50 addresses) | $5.00 |
-| `bridge_flow_trace` | Multi-hop cross-chain forensic trace with Solver detection + same-intent correlation (NEAR Intents / Wormhole / Stargate / Across / Synapse / Hop / deBridge) | $3.00 |
+| `check_address_risk` | AML risk score for any blockchain address (12 chains) | $0.10 |
+| `sanctions_check` | OFAC / FATF / JFSA sanctions screening (12 chains) | $0.05 |
+| `hack_exposure_lookup` | Is this address connected to a known hack (e.g. Binance 2026)? Verdict, hop distance from the attacker, role and lower-bound amounts per incident (EVM, TRON, Solana, Bitcoin) | $0.05 |
+| `freeze_status` | Is this address frozen / blacklisted by a stablecoin issuer (USDT, USDC, JPYC ...)? Current state per token with timestamps (Ethereum, Polygon, Avalanche, TRON) | $0.02 |
+| `hack_exposure_batch` | Known-hack exposure for up to 50 addresses in one call (deposit-list screening) | $1.00 |
+| `trace_transaction` | Transaction flow tracing with ML anomaly detection (12 chains) | $0.30 |
+| `detect_coinjoin` | Takes a Bitcoin transaction id and decides from its structure whether it is a CoinJoin: `is_coinjoin`, `mixer_type`, input / output counts and the groups of equal-value outputs | $0.10 |
+| `cluster_wallet` | Wallet clustering via Neo4j graph analysis | $0.25 |
+| `batch_screening` | Batch AML screening (up to 50 addresses, 12 chains) | $2.50 |
+| `bridge_flow_trace` | Multi-hop cross-chain forensic trace with Solver detection + same-intent correlation (NEAR Intents / Wormhole / Stargate / Across / Synapse / Hop / deBridge). Source chain: EVM chains or Solana | $0.50 |
+
+Prices are per call in x402 mode (USDC, from 2026-11-16). The live list is at <https://chain-analyzer.com/x402/api/discover>. The batch tools are a fixed price per call for up to 50 addresses.
 
 ## Agent framework examples
 
@@ -91,7 +93,7 @@ Create a `tfk_` API key at [chain-analyzer.com](https://chain-analyzer.com/login
 
 ### 2. x402 USDC Payment (Pay-Per-Request)
 
-No account needed. Pay with USDC on Base or Solana per request.
+No account needed. This MCP server pays per request with USDC on Base. (The ChainAnalyzer x402 API also accepts USDC on Solana when its 402 response offers it, but paying on Solana needs an x402 client that supports Solana; this server does not.)
 
 ```json
 {
@@ -103,6 +105,8 @@ No account needed. Pay with USDC on Base or Solana per request.
 ```
 
 Requires the `x402` npm package: `npm install x402`
+
+> **Use a key whose address has no EIP-7702 delegation.** If the paying address has an EIP-7702 delegation (it has been turned into a smart account), the USDC signature check on Base can fail and the payment is rejected. Pay from a plain address with no delegation.
 
 ### 3. Dev Mode
 
@@ -122,7 +126,7 @@ No authentication. Works when the ChainAnalyzer server has `X402_ENABLED=false`.
 |----------|-------------|----------|
 | `CHAINANALYZER_API_KEY` | `tfk_` API key (any plan, Free included) | One of API key or x402 |
 | `X402_PRIVATE_KEY` | Wallet private key for USDC payments | One of API key or x402 |
-| `X402_NETWORK` | Payment network: `base` or `solana` (default: `base`) | No |
+| `X402_NETWORK` | Payment network (default: `base`). This server pays on `base` only | No |
 | `CHAINANALYZER_BASE_URL` | API base URL (default: `https://chain-analyzer.com`) | No |
 
 ## Example Usage
@@ -152,7 +156,7 @@ All 12 chains are live for self-serve plans.
 | TRON | USDT flow screening, sanctions (independent scanner) |
 | XRP | Exchange / issuer labels, sanctions (independent scanner) |
 
-`bridge_flow_trace` supports EVM chains, Solana and Kaia. `detect_coinjoin` is Bitcoin only.
+`bridge_flow_trace` starts from EVM chains (Kaia included) or Solana. `detect_coinjoin` is Bitcoin only. `freeze_status` covers Ethereum, Polygon, Avalanche and TRON; `hack_exposure_lookup` / `hack_exposure_batch` cover EVM chains, TRON, Solana and Bitcoin.
 
 ## Links
 

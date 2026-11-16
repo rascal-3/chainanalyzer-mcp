@@ -5,9 +5,9 @@ paid per call with x402 (USDC on Base) or an API key. Typechecked against `@eliz
 
 | Action | Route | Price (x402) |
 | --- | --- | --- |
-| `CHAINANALYZER_SANCTIONS_CHECK` | `GET /x402/api/address/{address}/sanctions` | $0.50 |
-| `CHAINANALYZER_HACK_EXPOSURE` | `GET /x402/api/address/{address}/hack-exposure` | $0.50 |
-| `CHAINANALYZER_RISK_SCORE` | `GET /x402/api/address/{address}/risk-score` | $1.00 |
+| `CHAINANALYZER_SANCTIONS_CHECK` | `GET /x402/api/address/{address}/sanctions` | $0.05 |
+| `CHAINANALYZER_HACK_EXPOSURE` | `GET /x402/api/address/{address}/hack-exposure` | $0.05 |
+| `CHAINANALYZER_RISK_SCORE` | `GET /x402/api/address/{address}/risk-score` | $0.10 |
 
 Each action pulls the first address (EVM / TRON / Bitcoin / XRP / Solana format) and an optional
 chain name from the message text, calls the API, sends the JSON plus a disclaimer through the

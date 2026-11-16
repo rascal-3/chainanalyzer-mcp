@@ -1,7 +1,7 @@
 /**
  * ChainAnalyzer MCP Tool Definitions
  *
- * 7 AML tools matching the x402 API endpoints.
+ * 10 AML tools matching the x402 API endpoints.
  * Each tool maps to a pay-per-request endpoint on chain-analyzer.com.
  */
 
@@ -25,8 +25,9 @@ export const tools: ToolDefinition[] = [
       "Get AML risk score for any blockchain address. " +
       "Returns risk level (CRITICAL/HIGH/MEDIUM/LOW), score (0-100), " +
       "detection details, and ML anomaly score. " +
-      "Supports Bitcoin, Ethereum, Polygon, Avalanche, and Solana. " +
-      "Auto-detects chain if not specified. Price: $1.00 per request.",
+      "12 chains: Bitcoin, Ethereum, Polygon, BNB Smart Chain, Base, Arbitrum, Optimism, " +
+      "Avalanche, Solana, Kaia, TRON and XRP. " +
+      "Auto-detects chain if not specified. Price: $0.10 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -48,7 +49,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["address"],
     },
-    price: "$1.00",
+    price: "$0.10",
     endpoint: "/x402/api/address/{address}/risk-score",
     method: "GET",
   },
@@ -57,7 +58,7 @@ export const tools: ToolDefinition[] = [
     description:
       "Screen address against OFAC SDN, FATF, JFSA (Japan), and ChainAnalyzer ScamDB sanctions lists. " +
       "Returns whether the address is sanctioned, which lists matched, and risk level. " +
-      "Price: $0.50 per request.",
+      "12 chains (same as check_address_risk). Price: $0.05 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -73,7 +74,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["address"],
     },
-    price: "$0.50",
+    price: "$0.05",
     endpoint: "/x402/api/address/{address}/sanctions",
     method: "GET",
   },
@@ -85,7 +86,7 @@ export const tools: ToolDefinition[] = [
       "(none / attacker / downstream_of_hack / service_or_exchange_received) and per-incident " +
       "hop distance from the attacker, role, lower-bound amounts and first tx. " +
       "EVM chains, TRON, Solana and Bitcoin. An EVM address is matched on every EVM chain when " +
-      "chain is omitted. Not a legal determination. Price: $0.50 per request.",
+      "chain is omitted. Not a legal determination. Price: $0.05 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -113,7 +114,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["address"],
     },
-    price: "$0.50",
+    price: "$0.05",
     endpoint: "/x402/api/address/{address}/hack-exposure",
     method: "GET",
   },  {
@@ -124,7 +125,7 @@ export const tools: ToolDefinition[] = [
       "event wins), first freeze time, last event and its tx, plus `coverage` = the tokens " +
       "indexed on the searched chains (Ethereum, Polygon, Avalanche, TRON) so that " +
       "'not frozen' is interpretable. Absence of a freeze is not a guarantee. " +
-      "Price: $0.10 per request.",
+      "Price: $0.02 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -140,7 +141,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["address"],
     },
-    price: "$0.10",
+    price: "$0.02",
     endpoint: "/x402/api/address/{address}/freeze-status",
     method: "GET",
   },  {
@@ -150,7 +151,8 @@ export const tools: ToolDefinition[] = [
       "Per address: verdict (none / attacker / downstream_of_hack / " +
       "service_or_exchange_received) and up to 3 incidents with hop distance and role. " +
       "Invalid addresses are listed separately without failing the batch. " +
-      "Not a legal determination. Price: $5.00 per batch (fixed, up to 50 addresses).",
+      "EVM chains, TRON, Solana and Bitcoin. " +
+      "Not a legal determination. Price: $1.00 per batch (fixed, up to 50 addresses).",
     inputSchema: {
       type: "object",
       properties: {
@@ -166,7 +168,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["addresses"],
     },
-    price: "$5.00",
+    price: "$1.00",
     endpoint: "/x402/api/hack-exposure/batch",
     method: "POST",
   },  {
@@ -175,7 +177,8 @@ export const tools: ToolDefinition[] = [
       "Trace fund flows for a transaction with ML-powered anomaly detection. " +
       "Returns Neo4j graph data showing nodes (addresses) and edges (transfers). " +
       "Identifies mixing, layering, and suspicious routing patterns. " +
-      "Price: $3.00 per request.",
+      "12 chains; pass chain for TRON and XRP transaction ids. " +
+      "Price: $0.30 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -185,36 +188,39 @@ export const tools: ToolDefinition[] = [
         },
         chain: {
           type: "string",
-          description: "Blockchain network",
+          enum: ["bitcoin", "ethereum", "polygon", "bsc", "base", "arbitrum", "optimism", "avalanche", "solana", "kaia", "tron", "xrp"],
+          description:
+            "Blockchain network (auto-detected for EVM, Solana and Bitcoin hashes if omitted)",
         },
         depth: {
           type: "number",
-          description: "Trace depth, 1-5 (default: 3)",
+          description: "Trace depth, 1-3 (default: 3)",
         },
       },
       required: ["tx_hash"],
     },
-    price: "$3.00",
+    price: "$0.30",
     endpoint: "/x402/api/tx/{tx_hash}/trace",
     method: "GET",
   },
   {
     name: "detect_coinjoin",
     description:
-      "Detect CoinJoin, mixing, and tumbling patterns in a Bitcoin transaction. " +
-      "Returns whether CoinJoin was detected and related risk detections. " +
-      "Price: $1.00 per request.",
+      "Takes a Bitcoin transaction id and decides from the transaction's structure whether it is a CoinJoin. " +
+      "Returns is_coinjoin, mixer_type (Wasabi/WabiSabi, Whirlpool, JoinMarket or generic equal-output), " +
+      "the input and output counts, and the groups of equal-value outputs. Bitcoin only. " +
+      "Price: $0.10 per request.",
     inputSchema: {
       type: "object",
       properties: {
         tx_hash: {
           type: "string",
-          description: "Bitcoin transaction hash to analyze",
+          description: "Bitcoin transaction id (txid) to analyze",
         },
       },
       required: ["tx_hash"],
     },
-    price: "$1.00",
+    price: "$0.10",
     endpoint: "/x402/api/tx/{tx_hash}/coinjoin",
     method: "GET",
   },
@@ -224,7 +230,7 @@ export const tools: ToolDefinition[] = [
       "Identify related addresses through Neo4j graph clustering analysis. " +
       "Returns cluster size, related addresses, and graph structure. " +
       "Useful for entity resolution and tracing fund networks. " +
-      "Price: $2.50 per request.",
+      "Price: $0.25 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -239,7 +245,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["address"],
     },
-    price: "$2.50",
+    price: "$0.25",
     endpoint: "/x402/api/wallet/{address}/cluster",
     method: "GET",
   },
@@ -248,8 +254,7 @@ export const tools: ToolDefinition[] = [
     description:
       "Batch AML screening for multiple addresses at once (up to 50). " +
       "Returns risk level and score for each address. " +
-      "More cost-effective than individual checks for bulk analysis. " +
-      "Price: $5.00 per batch.",
+      "12 chains. Price: $2.50 per batch (fixed, up to 50 addresses).",
     inputSchema: {
       type: "object",
       properties: {
@@ -266,7 +271,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["addresses"],
     },
-    price: "$5.00",
+    price: "$2.50",
     endpoint: "/x402/api/batch/screening",
     method: "POST",
   },
@@ -282,7 +287,8 @@ export const tools: ToolDefinition[] = [
       "user / exchange / scanned / bridge) and edges (transfer / bridge_in / " +
       "bridge_out, with on-chain TX signatures). Ideal for compliance teams " +
       "investigating cross-chain laundering and AI agents that need provable " +
-      "cross-chain fund-flow evidence. Price: $3.00 per request.",
+      "cross-chain fund-flow evidence. Source chain: EVM chains (including Kaia) or Solana. " +
+      "Price: $0.50 per request.",
     inputSchema: {
       type: "object",
       properties: {
@@ -293,9 +299,8 @@ export const tools: ToolDefinition[] = [
         chain: {
           type: "string",
           // Bridge tracing is EVM+Solana only on the backend (bridge router
-          // validation) — tron/xrp are deliberately NOT listed here.
+          // validation) — bitcoin/tron/xrp are deliberately NOT listed here.
           enum: [
-            "bitcoin",
             "ethereum",
             "polygon",
             "bsc",
@@ -318,7 +323,7 @@ export const tools: ToolDefinition[] = [
       },
       required: ["address"],
     },
-    price: "$3.00",
+    price: "$0.50",
     endpoint: "/x402/api/bridge-flow/trace",
     method: "POST",
   },

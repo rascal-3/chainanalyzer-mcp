@@ -4,7 +4,7 @@
     tools = get_chainanalyzer_tools()          # reads env for auth
 
 Each tool is async (``ainvoke``) and costs USDC per call in x402 mode:
-sanctions $0.50, hack exposure $0.50, risk score $1.00.
+sanctions $0.05, hack exposure $0.05, risk score $0.10.
 """
 
 from __future__ import annotations

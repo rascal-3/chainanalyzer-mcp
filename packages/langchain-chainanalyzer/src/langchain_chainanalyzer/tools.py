@@ -4,7 +4,7 @@
     tools = ChainAnalyzerToolkit().get_tools()   # reads auth from the environment
 
 Every tool supports ``ainvoke`` (preferred) and ``invoke``. In x402 mode each call costs USDC:
-sanctions $0.50, hack exposure $0.50, freeze status $0.10, risk score $1.00, batch $5.00 (opt-in).
+sanctions $0.05, hack exposure $0.05, freeze status $0.02, risk score $0.10, batch $1.00 (opt-in).
 """
 
 from __future__ import annotations
@@ -95,7 +95,7 @@ def _make_tool(
 def get_chainanalyzer_tools(
     client: Optional[ChainAnalyzerClient] = None, *, include_batch: bool = False, **client_kwargs: Any
 ) -> list[BaseTool]:
-    """Return the ChainAnalyzer tools. ``include_batch`` adds the $5.00 batch tool (off by default)."""
+    """Return the ChainAnalyzer tools. ``include_batch`` adds the $1.00 batch tool (off by default)."""
     ca = client or ChainAnalyzerClient(**client_kwargs)
     tools = [
         _make_tool(
