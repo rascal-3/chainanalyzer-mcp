@@ -1,14 +1,18 @@
 {
   "name": "chainanalyzer-mcp",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "mcpName": "io.github.rascal-3/chainanalyzer-mcp",
   "description": "ChainAnalyzer MCP Server — Multi-chain blockchain AML risk scoring, sanctions screening and cross-chain fund tracing for AI agents. 12 chains (BTC, ETH, POL, BNB, BASE, ARB, OP, AVAX, SOL, KAIA, TRX, XRP). API key or x402 USDC payments on Base. Ships with an Agent Skill and Claude Code plugin manifest.",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=20.18"
+  },
   "files": [
     ".claude-plugin",
     ".mcp.json",
     "claude_desktop_config.example.json",
+    "dist",
     "docs",
     "skills",
     "src",
@@ -19,21 +23,26 @@
     "tsconfig.json"
   ],
   "bin": {
-    "chainanalyzer-mcp": "src/index.ts"
+    "chainanalyzer-mcp": "dist/index.js"
   },
   "scripts": {
     "start": "tsx src/index.ts",
     "build": "tsc",
-    "dev": "tsx --watch src/index.ts"
+    "dev": "tsx --watch src/index.ts",
+    "test": "tsc && node --test test/",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
+    "@x402/evm": "2.26.0",
+    "@x402/fetch": "2.26.0",
+    "viem": "2.56.8",
     "zod": "^3.23.0"
   },
   "devDependencies": {
+    "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.7.0",
-    "@types/node": "^22.0.0"
+    "typescript": "^5.7.0"
   },
   "keywords": [
     "mcp",

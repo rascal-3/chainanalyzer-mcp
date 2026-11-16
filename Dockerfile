@@ -1,7 +1,7 @@
 # Minimal Dockerfile for chainanalyzer-mcp — used for Glama MCP server
 # directory (https://glama.ai/mcp/servers). Container just needs to
 # start and answer MCP introspection requests (list tools / capabilities).
-# No secrets required for that; actual scans require X402_WALLET_PRIVATE_KEY
+# No secrets required for that; actual scans require X402_PRIVATE_KEY
 # or CHAINANALYZER_API_KEY at runtime.
 
 # Pinned to an exact patch release; bump when Node ships a security release

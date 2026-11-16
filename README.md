@@ -93,18 +93,20 @@ Create a `tfk_` API key at [chain-analyzer.com](https://chain-analyzer.com/login
 
 ### 2. x402 USDC Payment (Pay-Per-Request)
 
-No account needed. This MCP server pays per request with USDC on Base. (The ChainAnalyzer x402 API also accepts USDC on Solana when its 402 response offers it, but paying on Solana needs an x402 client that supports Solana; this server does not.)
+No account needed. Set `X402_PRIVATE_KEY` and the server pays each call automatically in USDC on Base (x402 v2, exact scheme). No extra install is needed. (The ChainAnalyzer x402 API also accepts USDC on Solana when its 402 response offers it, but this server pays on Base only.)
 
 ```json
 {
   "env": {
-    "X402_PRIVATE_KEY": "your_wallet_private_key",
-    "X402_NETWORK": "base"
+    "X402_PRIVATE_KEY": "0x_private_key_of_a_dedicated_low_balance_wallet",
+    "X402_MAX_USD_PER_CALL": "1.00"
   }
 }
 ```
 
-Requires the `x402` npm package: `npm install x402`
+- `X402_MAX_USD_PER_CALL` (default `1.00`) caps a single payment. A call priced above it is refused before anything is signed. `batch_screening` costs $2.50, so set it to `2.50` or more to use that tool.
+- Calls that fail are not charged: the server settles the payment only after a successful response. If a payment is rejected, the error shows the server's reason and hint.
+- Use a dedicated wallet that holds only a small USDC balance on Base. The key is never logged.
 
 > **Use a key whose address has no EIP-7702 delegation.** If the paying address has an EIP-7702 delegation (it has been turned into a smart account), the USDC signature check on Base can fail and the payment is rejected. Pay from a plain address with no delegation.
 
@@ -125,8 +127,9 @@ No authentication. Works when the ChainAnalyzer server has `X402_ENABLED=false`.
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `CHAINANALYZER_API_KEY` | `tfk_` API key (any plan, Free included) | One of API key or x402 |
-| `X402_PRIVATE_KEY` | Wallet private key for USDC payments | One of API key or x402 |
-| `X402_NETWORK` | Payment network (default: `base`). This server pays on `base` only | No |
+| `X402_PRIVATE_KEY` | Hex EVM private key of the wallet that pays in USDC on Base | One of API key or x402 |
+| `X402_MAX_USD_PER_CALL` | Per-call payment limit in USD (default: `1.00`; `2.50` or more for `batch_screening`) | No |
+| `X402_NETWORK` | Payment network (default: `base`). Only `base` is supported; any other value is an error | No |
 | `CHAINANALYZER_BASE_URL` | API base URL (default: `https://chain-analyzer.com`) | No |
 
 ## Example Usage

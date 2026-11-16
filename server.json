@@ -6,12 +6,12 @@
     "url": "https://github.com/rascal-3/chainanalyzer-mcp",
     "source": "github"
   },
-  "version": "1.7.1",
+  "version": "1.8.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "chainanalyzer-mcp",
-      "version": "1.7.1",
+      "version": "1.8.0",
       "transport": {
         "type": "stdio"
       },
@@ -24,13 +24,20 @@
         },
         {
           "name": "X402_PRIVATE_KEY",
-          "description": "Wallet private key used to sign x402 USDC micropayments on Base (pay-per-request mode, no account needed). Use an address with no EIP-7702 delegation. Use this or CHAINANALYZER_API_KEY.",
+          "description": "Hex EVM private key. When set, the server pays each call automatically in USDC on Base via x402 (no account, no extra install). Use a dedicated low-balance wallet with no EIP-7702 delegation. Use this or CHAINANALYZER_API_KEY.",
           "isRequired": false,
           "isSecret": true
         },
         {
+          "name": "X402_MAX_USD_PER_CALL",
+          "description": "Per-call x402 payment limit in USD (default 1.00). Calls priced above it are refused before signing; batch_screening ($2.50) needs 2.50 or more.",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "1.00"
+        },
+        {
           "name": "X402_NETWORK",
-          "description": "x402 payment network: base (default). This server pays with USDC on Base only",
+          "description": "x402 payment network: base (default and only supported value)",
           "isRequired": false,
           "isSecret": false,
           "default": "base"

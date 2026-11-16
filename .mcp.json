@@ -6,7 +6,8 @@
       "env": {
         "CHAINANALYZER_API_KEY": "${CHAINANALYZER_API_KEY}",
         "X402_PRIVATE_KEY": "${X402_PRIVATE_KEY:-}",
-        "X402_NETWORK": "${X402_NETWORK:-base}"
+        "X402_NETWORK": "${X402_NETWORK:-base}",
+        "X402_MAX_USD_PER_CALL": "${X402_MAX_USD_PER_CALL:-1.00}"
       }
     }
   }

@@ -72,18 +72,20 @@ npm start
 
 ### 2. x402 USDC決済（従量課金）
 
-アカウント不要。このMCPサーバーはBase上のUSDCでリクエストごとに支払います(ChainAnalyzerのx402 APIは、402の応答でSolanaを案内しているときSolana上のUSDCでも受け付けますが、Solanaで払うにはSolanaに対応したx402クライアントが必要で、このサーバーは対応していません)。
+アカウント不要。`X402_PRIVATE_KEY`を設定すると、Base上のUSDCで1回ごとに自動で支払います(x402 v2・exact方式)。追加のインストールは不要です(ChainAnalyzerのx402 APIは、402の応答でSolanaを案内しているときSolana上のUSDCでも受け付けますが、このサーバーの支払いはBaseのみです)。
 
 ```json
 {
   "env": {
-    "X402_PRIVATE_KEY": "your_wallet_private_key",
-    "X402_NETWORK": "base"
+    "X402_PRIVATE_KEY": "0x_private_key_of_a_dedicated_low_balance_wallet",
+    "X402_MAX_USD_PER_CALL": "1.00"
   }
 }
 ```
 
-`x402` npmパッケージが必要: `npm install x402`
+- `X402_MAX_USD_PER_CALL`(デフォルト`1.00`)は1回あたりの支払いの上限です。これを超える価格の呼び出しは、署名する前に止めます。`batch_screening`は$2.50なので、使うときは`2.50`以上にしてください。
+- 失敗した呼び出しは課金されません(サーバーは成功の応答を返したときだけ決済します)。支払いが弾かれたときは、サーバーが返した理由と手がかり(hint)をエラーに出します。
+- Base上のUSDCを少額だけ入れた専用のウォレットを使ってください。鍵はログに出しません。
 
 > **EIP-7702の委任が無いアドレスの鍵を使ってください。**支払い元のアドレスにEIP-7702の委任(スマートアカウント化)が付いていると、Base上のUSDCの署名の確認が通らず、支払いが失敗することがあります。
 
@@ -104,8 +106,9 @@ npm start
 | 変数 | 説明 | 必須 |
 |------|------|------|
 | `CHAINANALYZER_API_KEY` | `tfk_` APIキー（サブスクリプション認証） | APIキーまたはx402のいずれか |
-| `X402_PRIVATE_KEY` | USDC決済用ウォレット秘密鍵 | APIキーまたはx402のいずれか |
-| `X402_NETWORK` | 決済ネットワーク(デフォルト: `base`)。このサーバーの支払いは`base`のみ | いいえ |
+| `X402_PRIVATE_KEY` | Base上のUSDCで支払うウォレットの秘密鍵(16進) | APIキーまたはx402のいずれか |
+| `X402_MAX_USD_PER_CALL` | 1回あたりの支払いの上限(USD・デフォルト`1.00`・`batch_screening`は`2.50`以上) | いいえ |
+| `X402_NETWORK` | 決済ネットワーク(デフォルト: `base`)。対応は`base`のみで、ほかの値はエラー | いいえ |
 | `CHAINANALYZER_BASE_URL` | APIベースURL（デフォルト: `https://chain-analyzer.com`） | いいえ |
 
 ## 使用例

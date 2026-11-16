@@ -254,7 +254,8 @@ export const tools: ToolDefinition[] = [
     description:
       "Batch AML screening for multiple addresses at once (up to 50). " +
       "Returns risk level and score for each address. " +
-      "12 chains. Price: $2.50 per batch (fixed, up to 50 addresses).",
+      "12 chains. Price: $2.50 per batch (fixed, up to 50 addresses). " +
+      "In x402 mode raise X402_MAX_USD_PER_CALL to at least 2.50 (default limit 1.00).",
     inputSchema: {
       type: "object",
       properties: {

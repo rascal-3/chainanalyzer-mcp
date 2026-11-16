@@ -1,196 +1,263 @@
 /**
- * x402 HTTP Client for ChainAnalyzer MCP Server
+ * HTTP client for the ChainAnalyzer MCP server.
  *
- * Two modes:
- * 1. x402 mode (X402_PRIVATE_KEY set): Auto-pays with USDC via x402 protocol
- * 2. API key mode (CHAINANALYZER_API_KEY set): Uses tfk_ key (subscription-based)
- * 3. Dev mode (neither set): Calls endpoints without payment (X402_ENABLED=false on server)
+ * Three modes:
+ * 1. API key mode (CHAINANALYZER_API_KEY set): X-API-Key header, billed to the plan. Wins if both are set.
+ * 2. x402 mode (X402_PRIVATE_KEY set): pays each call in USDC on Base mainnet via x402 v2.
+ *    `@x402/fetch` handles 402 -> sign (EIP-3009, exact scheme) -> resend with the payment header.
+ * 3. No auth (neither set): plain request; a 402 is reported with the quoted price.
  *
- * The x402 flow:
- *   1. Send request → receive 402 with payment requirements
- *   2. Sign USDC transfer with private key
- *   3. Resend with X-PAYMENT header → receive 200 with result
+ * x402 safety rails:
+ * - X402_MAX_USD_PER_CALL (default 1.00) caps a single payment. A quote above the cap is refused
+ *   before anything is signed.
+ * - Only Base mainnet (eip155:8453) is registered. X402_NETWORK other than "base" is an error.
+ * - The private key is never logged or put into an error message.
+ * - The server settles only after a successful (2xx) response, so a failed call is not charged.
  */
 
-const DEFAULT_BASE_URL = "https://chain-analyzer.com"
+import { wrapFetchWithPayment, x402Client } from "@x402/fetch"
+import { ExactEvmScheme } from "@x402/evm"
+import { privateKeyToAccount } from "viem/accounts"
 
-interface X402ClientConfig {
-  baseUrl: string
-  privateKey?: string
-  apiKey?: string
-  network?: string
+const DEFAULT_BASE_URL = "https://chain-analyzer.com"
+export const BASE_MAINNET = "eip155:8453"
+export const DEFAULT_MAX_USD_PER_CALL = "1.00"
+const USDC_DECIMALS = 6
+
+type Env = Record<string, string | undefined>
+
+export interface RequestDeps {
+  /** Replaces the global fetch (tests). */
+  fetch?: typeof fetch
+  /** Replaces process.env (tests). */
+  env?: Env
 }
 
-function getConfig(): X402ClientConfig {
-  return {
-    baseUrl: process.env.CHAINANALYZER_BASE_URL || DEFAULT_BASE_URL,
-    privateKey: process.env.X402_PRIVATE_KEY,
-    apiKey: process.env.CHAINANALYZER_API_KEY,
-    network: process.env.X402_NETWORK || "base",
+interface PaymentAccept {
+  scheme?: string
+  network?: string
+  amount?: string
+  maxAmountRequired?: string
+  payTo?: string
+}
+
+export class X402ConfigError extends Error {}
+export class X402PaymentError extends Error {}
+
+/** USDC atomic units (6 decimals) -> "$0.10". */
+export function formatUsd(amount: string | undefined): string {
+  if (amount === undefined || !/^\d+$/.test(amount)) return "unknown"
+  return `$${(Number(amount) / 10 ** USDC_DECIMALS).toFixed(2)}`
+}
+
+function parseMaxUsd(raw: string | undefined): number {
+  const value = (raw ?? DEFAULT_MAX_USD_PER_CALL).trim().replace(/^\$/, "")
+  const n = Number(value)
+  if (!/^\d+(\.\d+)?$/.test(value) || !Number.isFinite(n) || n <= 0) {
+    throw new X402ConfigError(
+      `X402_MAX_USD_PER_CALL must be a positive dollar amount such as 1.00 (got ${JSON.stringify(raw)}).`,
+    )
+  }
+  return n
+}
+
+function checkNetwork(raw: string | undefined): void {
+  const v = (raw ?? "base").trim().toLowerCase()
+  if (v === "" || v === "base" || v === BASE_MAINNET) return
+  throw new X402ConfigError(
+    `X402_NETWORK=${JSON.stringify(raw)} is not supported. This MCP server pays with USDC on Base mainnet only ` +
+      `(set X402_NETWORK=base or leave it unset).`,
+  )
+}
+
+function parsePrivateKey(raw: string): `0x${string}` {
+  const key = raw.trim()
+  const normalized = key.startsWith("0x") ? key : `0x${key}`
+  if (!/^0x[0-9a-fA-F]{64}$/.test(normalized)) {
+    // Never echo the value.
+    throw new X402ConfigError("X402_PRIVATE_KEY must be a 32-byte hex EVM private key (0x followed by 64 hex characters).")
+  }
+  return normalized as `0x${string}`
+}
+
+/** Payment requirements from a 402: the PAYMENT-REQUIRED header (v2), else the JSON body. */
+function readPaymentRequired(headerValue: string | null, bodyText: string): { accepts?: PaymentAccept[] } | null {
+  if (headerValue) {
+    try {
+      return JSON.parse(Buffer.from(headerValue, "base64").toString("utf8"))
+    } catch {
+      // fall through to the body
+    }
+  }
+  try {
+    return JSON.parse(bodyText)
+  } catch {
+    return null
   }
 }
 
+function acceptAmount(a: PaymentAccept): string | undefined {
+  return a.amount ?? a.maxAmountRequired
+}
+
+function hasPaymentHeader(req: Request): boolean {
+  return req.headers.has("PAYMENT-SIGNATURE") || req.headers.has("X-PAYMENT")
+}
+
+/** Human-readable reason for a non-2xx response, including the server's hint when present. */
+function describeFailure(status: number, bodyText: string, paid: boolean): string {
+  let body: Record<string, unknown> | null = null
+  try {
+    body = JSON.parse(bodyText)
+  } catch {
+    body = null
+  }
+  const parts: string[] = []
+  if (paid && status === 402) {
+    parts.push("ChainAnalyzer did not accept the x402 payment. Nothing was charged.")
+  } else if (paid) {
+    parts.push(
+      `ChainAnalyzer API error ${status}. The server settles a payment only after a successful response, ` +
+        "so this call was not charged.",
+    )
+  } else {
+    parts.push(`ChainAnalyzer API error ${status}.`)
+  }
+  if (body) {
+    for (const key of ["error", "stage", "reason", "detail"] as const) {
+      const v = body[key]
+      if (typeof v === "string" && v) parts.push(`${key}: ${v.slice(0, 300)}`)
+    }
+    const hint = body.hint as { code?: string; message?: string } | undefined
+    if (hint && typeof hint === "object") {
+      if (hint.code) parts.push(`hint: ${hint.code}`)
+      if (hint.code === "payer_has_eip7702_delegation") {
+        parts.push(
+          "The paying address has an EIP-7702 delegation (it was turned into a smart account), so the USDC " +
+            "signature check on Base fails. Use the key of an address with no delegation.",
+        )
+      } else if (hint.code === "payer_is_contract") {
+        parts.push("The paying address is a smart contract wallet. Use the key of a plain address (EOA).")
+      }
+      if (hint.message) parts.push(hint.message)
+    }
+  } else if (bodyText) {
+    parts.push(bodyText.slice(0, 300))
+  }
+  return parts.join("\n")
+}
+
 /**
- * Make an x402-compatible HTTP request.
- *
- * If x402 private key is configured, handles the 402 → pay → retry flow.
- * If API key is configured, uses Bearer auth instead.
- * Otherwise, makes a plain request (works in dev mode).
+ * Make a request to ChainAnalyzer using whichever auth mode is configured.
  */
 export async function x402Request(
   url: string,
   options: { method?: string; body?: string } = {},
+  deps: RequestDeps = {},
 ): Promise<unknown> {
-  const config = getConfig()
+  const env: Env = deps.env ?? process.env
+  const baseFetch: typeof fetch = deps.fetch ?? fetch
   const method = options.method || "GET"
+  const headers: Record<string, string> = { Accept: "application/json" }
+  if (options.body !== undefined) headers["Content-Type"] = "application/json"
 
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  }
-
-  // Mode 1: API key auth (subscription)
-  if (config.apiKey) {
-    headers["X-API-Key"] = config.apiKey
-    const resp = await fetch(url, { method, headers, body: options.body })
-    if (!resp.ok) {
-      throw new Error(
-        `ChainAnalyzer API error: ${resp.status} ${await resp.text()}`,
-      )
-    }
+  // Mode 1: API key (subscription)
+  const apiKey = env.CHAINANALYZER_API_KEY
+  if (apiKey) {
+    const resp = await baseFetch(url, { method, headers: { ...headers, "X-API-Key": apiKey }, body: options.body })
+    if (!resp.ok) throw new Error(describeFailure(resp.status, await resp.text(), false))
     return resp.json()
   }
 
   // Mode 2: x402 payment
-  if (config.privateKey) {
-    return await x402PaymentFlow(url, method, headers, options.body, config)
+  const rawKey = env.X402_PRIVATE_KEY
+  if (rawKey) {
+    return x402PaidRequest(url, method, headers, options.body, rawKey, env, baseFetch)
   }
 
-  // Mode 3: Dev/free mode (no auth)
-  const resp = await fetch(url, { method, headers, body: options.body })
+  // Mode 3: no auth
+  const resp = await baseFetch(url, { method, headers, body: options.body })
   if (resp.status === 402) {
-    const paymentInfo = await resp.json()
+    const text = await resp.text()
+    const req = readPaymentRequired(resp.headers.get("PAYMENT-REQUIRED"), text)
+    const offers = (req?.accepts ?? []).map((a) => `${formatUsd(acceptAmount(a))} USDC on ${a.network ?? "unknown"}`)
     throw new Error(
-      `Payment required. Set X402_PRIVATE_KEY or CHAINANALYZER_API_KEY.\n` +
-        `Price: ${paymentInfo.accepts?.[0]?.price || "unknown"}\n` +
-        `Networks: ${paymentInfo.accepts?.map((a: { network: string }) => a.network).join(", ") || "unknown"}`,
+      "Payment required. Set CHAINANALYZER_API_KEY (any plan, Free included) or X402_PRIVATE_KEY " +
+        "(pays per call in USDC on Base).\n" +
+        `Price: ${offers.length ? offers.join(" / ") : "unknown"}`,
     )
   }
-  if (!resp.ok) {
-    throw new Error(
-      `ChainAnalyzer API error: ${resp.status} ${await resp.text()}`,
-    )
-  }
+  if (!resp.ok) throw new Error(describeFailure(resp.status, await resp.text(), false))
   return resp.json()
 }
 
-/**
- * x402 payment flow:
- * 1. Request → 402
- * 2. Parse payment requirements
- * 3. Sign payment with private key
- * 4. Retry with X-PAYMENT header
- */
-async function x402PaymentFlow(
+async function x402PaidRequest(
   url: string,
   method: string,
   headers: Record<string, string>,
   body: string | undefined,
-  config: X402ClientConfig,
+  rawKey: string,
+  env: Env,
+  baseFetch: typeof fetch,
 ): Promise<unknown> {
-  // Step 1: Initial request
-  const initialResp = await fetch(url, { method, headers, body })
+  checkNetwork(env.X402_NETWORK)
+  const maxUsd = parseMaxUsd(env.X402_MAX_USD_PER_CALL)
+  const privateKey = parsePrivateKey(rawKey)
 
-  // If not 402, return as-is
-  if (initialResp.status !== 402) {
-    if (!initialResp.ok) {
-      throw new Error(
-        `ChainAnalyzer API error: ${initialResp.status} ${await initialResp.text()}`,
-      )
-    }
-    return initialResp.json()
-  }
-
-  // Step 2: Parse 402 payment requirements
-  const paymentRequired = await initialResp.json()
-
-  if (
-    !paymentRequired.accepts ||
-    paymentRequired.accepts.length === 0
-  ) {
-    throw new Error("402 received but no payment options available")
-  }
-
-  // Step 3: Create signed payment
-  // Try to use x402 SDK if available, otherwise provide manual instructions
-  let paymentHeader: string
+  let account
   try {
-    paymentHeader = await createPayment(paymentRequired, config)
-  } catch (e) {
-    const accepts = paymentRequired.accepts[0]
-    throw new Error(
-      `x402 payment signing failed: ${e instanceof Error ? e.message : e}\n\n` +
-        `To use x402 payments, install the x402 package:\n` +
-        `  npm install x402\n\n` +
-        `Payment details:\n` +
-        `  Price: ${accepts.price}\n` +
-        `  Network: ${accepts.network}\n` +
-        `  Pay to: ${accepts.payTo}\n`,
-    )
+    account = privateKeyToAccount(privateKey)
+  } catch {
+    throw new X402ConfigError("X402_PRIVATE_KEY is not a valid EVM private key.")
   }
 
-  // Step 4: Retry with payment
-  headers["X-PAYMENT"] = paymentHeader
+  const payer = new x402Client()
+    .register(BASE_MAINNET, new ExactEvmScheme(account))
+    .setSpendControls({ maxAmountPerPayment: `$${maxUsd}` })
 
-  const paidResp = await fetch(url, { method, headers, body })
-  if (!paidResp.ok) {
-    throw new Error(
-      `Payment accepted but request failed: ${paidResp.status} ${await paidResp.text()}`,
-    )
-  }
+  // Checks the quote of the first (unpaid) 402 before @x402/fetch signs anything, so that an
+  // over-cap price or a missing Base option produces a clear error and no payment.
+  const guardedFetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    const resp = await baseFetch(input, init)
+    const req = input instanceof Request ? input : new Request(input, init)
+    if (resp.status !== 402 || hasPaymentHeader(req)) return resp
 
-  return paidResp.json()
-}
-
-/**
- * Create a signed x402 payment using the x402 SDK.
- * Supports both EVM (Base) and Solana networks.
- */
-async function createPayment(
-  paymentRequired: { accepts: Array<{ network: string; price: string; payTo: string }> },
-  config: X402ClientConfig,
-): Promise<string> {
-  // Dynamic import of x402 SDK
-  const x402Module = await import("x402").catch(() => null)
-
-  if (x402Module?.wrapFetchWithPayment) {
-    // Use the official x402 SDK wrapper
-    const wrappedFetch = x402Module.wrapFetchWithPayment(fetch, {
-      privateKey: config.privateKey!,
-      network: config.network || "base",
-    })
-
-    // The wrapped fetch handles the full 402 flow internally
-    // But since we already have the 402 response, we need to
-    // use the lower-level signing function
-    if (x402Module.createPaymentHeader) {
-      return await x402Module.createPaymentHeader(
-        paymentRequired,
-        config.privateKey!,
-        config.network || "base",
+    const text = await resp.clone().text()
+    const required = readPaymentRequired(resp.headers.get("PAYMENT-REQUIRED"), text)
+    const base = (required?.accepts ?? []).find((a) => a.network === BASE_MAINNET && a.scheme === "exact")
+    if (!base) {
+      throw new X402PaymentError(
+        "ChainAnalyzer did not offer a USDC-on-Base payment option for this call, so nothing was paid.",
       )
     }
+    const amount = acceptAmount(base)
+    if (!amount || !/^\d+$/.test(amount)) {
+      throw new X402PaymentError("ChainAnalyzer returned a 402 without a readable price, so nothing was paid.")
+    }
+    if (Number(amount) / 10 ** USDC_DECIMALS > maxUsd) {
+      throw new X402PaymentError(
+        `This call costs ${formatUsd(amount)} USDC, above the per-call limit of $${maxUsd.toFixed(2)} ` +
+          `(X402_MAX_USD_PER_CALL). Nothing was paid. Raise X402_MAX_USD_PER_CALL (for example to ` +
+          `${formatUsd(amount).slice(1)}) to allow it.`,
+      )
+    }
+    return resp
+  }) as typeof fetch
+
+  const payingFetch = wrapFetchWithPayment(guardedFetch, payer)
+
+  let resp: Response
+  try {
+    resp = await payingFetch(url, { method, headers, body })
+  } catch (err) {
+    if (err instanceof X402PaymentError || err instanceof X402ConfigError) throw err
+    // Messages come from fetch / @x402. Redact the key defensively before surfacing them.
+    const msg = (err instanceof Error ? err.message : String(err))
+      .split(privateKey).join("[redacted]")
+      .split(privateKey.slice(2)).join("[redacted]")
+    throw new X402PaymentError(`x402 payment could not be completed (nothing was charged): ${msg.slice(0, 500)}`)
   }
 
-  // Fallback: try @x402/core
-  const coreModule = await import("@x402/core").catch(() => null)
-  if (coreModule?.createPaymentHeader) {
-    return await coreModule.createPaymentHeader(
-      paymentRequired,
-      config.privateKey!,
-    )
-  }
-
-  throw new Error(
-    "x402 SDK not found. Install with: npm install x402",
-  )
+  if (!resp.ok) throw new Error(describeFailure(resp.status, await resp.text(), true))
+  return resp.json()
 }

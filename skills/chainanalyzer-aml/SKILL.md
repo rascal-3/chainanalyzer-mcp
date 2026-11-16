@@ -35,8 +35,12 @@ Authentication is one of:
 - `CHAINANALYZER_API_KEY` (`tfk_...`). Preferred. API keys are available on every plan, including Free
   (10 scans/month): sign up at https://chain-analyzer.com/login?utm_source=skill and create a key under
   Account → Settings → API Keys (https://chain-analyzer.com/account/settings/api_keys).
-- `X402_PRIVATE_KEY` for pay-per-request USDC on Base via x402, no account needed. The paying address must not
-  have an EIP-7702 delegation (a delegated address can fail the USDC signature check and the payment is rejected).
+- `X402_PRIVATE_KEY` for pay-per-request USDC on Base via x402, no account needed. The server pays each call
+  automatically; no extra install. `X402_MAX_USD_PER_CALL` (default `1.00`) caps one payment, so `batch_screening`
+  ($2.50) needs it raised to `2.50` or more. The paying address must not have an EIP-7702 delegation (a delegated
+  address can fail the USDC signature check and the payment is rejected).
+- A call refused by the per-call limit, or a payment the server rejects, is not charged. Relay the error text
+  (it carries the server's reason and hint) and let the user decide.
 
 ### If a call fails with an auth or payment error
 

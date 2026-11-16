@@ -7,14 +7,15 @@
  * ChatGPT, Gemini, and any MCP-compatible client.
  *
  * Authentication modes:
- *   1. x402 (USDC): Set X402_PRIVATE_KEY — pay per request
- *   2. API key:     Set CHAINANALYZER_API_KEY — subscription-based
+ *   1. API key:     Set CHAINANALYZER_API_KEY — subscription-based (wins if both are set)
+ *   2. x402 (USDC): Set X402_PRIVATE_KEY — pays each call in USDC on Base automatically;
+ *                   X402_MAX_USD_PER_CALL (default 1.00) caps a single payment
  *   3. Dev mode:    Neither set — works when server has X402_ENABLED=false
  *
  * Usage:
- *   npx @chainanalyzer/mcp-server
+ *   npx -y chainanalyzer-mcp
  *   # or
- *   tsx packages/mcp/src/index.ts
+ *   npm run build && node dist/index.js
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
@@ -28,7 +29,7 @@ const BASE_URL =
 
 const server = new McpServer({
   name: "chainanalyzer-aml",
-  version: "1.7.1",
+  version: "1.8.0",
 })
 
 // x402 prices below are the list prices from 2026-11-16
@@ -235,7 +236,7 @@ server.tool(
 
 server.tool(
   "batch_screening",
-  "Batch AML screening for multiple addresses at once (up to 50). Returns risk level and score per address. 12 chains. Price: $2.50 per batch (fixed, up to 50 addresses).",
+  "Batch AML screening for multiple addresses at once (up to 50). Returns risk level and score per address. 12 chains. Price: $2.50 per batch (fixed, up to 50 addresses). In x402 mode this is above the default per-call limit of $1.00, so X402_MAX_USD_PER_CALL must be raised to at least 2.50.",
   {
     addresses: z
       .array(z.string())

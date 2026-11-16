@@ -8,9 +8,10 @@
 
         "_comment_auth": "Choose ONE authentication method below:",
 
-        "_comment_x402": "Option 1: x402 USDC payment (pay per request, no account needed)",
+        "_comment_x402": "Option 1: x402 USDC payment on Base (pay per request, no account needed). X402_MAX_USD_PER_CALL caps one payment; use 2.50 or more for batch_screening.",
         "X402_PRIVATE_KEY": "",
         "X402_NETWORK": "base",
+        "X402_MAX_USD_PER_CALL": "1.00",
 
         "_comment_apikey": "Option 2: API key (subscription-based, requires ChainAnalyzer account)",
         "CHAINANALYZER_API_KEY": ""
